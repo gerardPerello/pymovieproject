@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+#Personalized
+credentials.py
 .idea/
 
 # C extensions
