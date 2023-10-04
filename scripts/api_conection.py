@@ -25,6 +25,7 @@ def get(url, params, print_ = False):
         
         json_str = response.replace("'", "''") # response.text.replace("'", "''") # Escape single quotes 
 
+
         if print_:
             print(data)
 
