@@ -4,7 +4,10 @@ import datetime as dt
 import pandas as pd
 from time import sleep
 import os
+import sys
+sys.path.append('../scripts/credentials')
 
+import credentials
 # Get 
 file_path = '../data/currencies.json'
 df = pd.read_json(file_path)
