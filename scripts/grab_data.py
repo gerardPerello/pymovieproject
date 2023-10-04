@@ -12,6 +12,8 @@ currencies = ""
 for a in df['Code'].values:
     currencies += a + ","
 
+#test
+
 my_api_key = '0b1558630f3f8beb22e890609d581131'
 
 url = 'http://api.currencylayer.com/historical'
