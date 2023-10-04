@@ -26,7 +26,6 @@ if 'stock_price' not in st.session_state:
     st.session_state.stock_price = []
     st.session_state.stock_price.append(stock_ts[turn] * 2.71828 ** events[turn])
 
-
 def next_turn():
     st.session_state.turn += 1
     st.session_state.stock_price.append(stock_ts[turn] * 2.71828 ** events[turn])
