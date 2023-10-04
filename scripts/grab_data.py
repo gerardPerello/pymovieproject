@@ -5,8 +5,8 @@ import pandas as pd
 from time import sleep
 
 # Get 
-html_file_path = 'C:/Users/edrae/Downloads/cl-currencies-table.html'
-df = pd.read_html(html_file_path)[0]
+file_path = '../data/currencies.json'
+df = pd.read_json(file_path)
 
 currencies = ""
 for a in df['Code'].values:
@@ -46,4 +46,4 @@ while start_date <= end_date:
 
     sleep(1)
 
-pd.json_normalize(data)
+print(pd.json_normalize(data))
