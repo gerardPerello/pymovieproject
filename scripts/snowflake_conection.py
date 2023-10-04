@@ -3,7 +3,12 @@ import os
 import sys
 sys.path.append('../scripts/credentials')
 
+
+
 def connect_snowflake():
+    global conn
+    global cur
+
     conn = snowflake.connector.connect(
     user=os.getenv('SNOWSQL_USR'), 
     password=os.getenv('SNOWSQL_PWD'), 
@@ -11,13 +16,14 @@ def connect_snowflake():
     warehouse=os.getenv('SNOWSQL_WH'), 
     database=os.getenv('SNOWSQL_DB'),
     schema=os.getenv('SNOWSQL_SCH') ) 
-    return conn
+    cur = conn.cursor()
 
 def do_operation(operation_name, table_name, data_type, data):
-    conn = connect_snowflake()
+    
+    connect_snowflake()
     
     if(operation_name == "PUSH"):
-        push_data(conn, table_name, data_type, data)
+        push_data(table_name, data_type, data)
 
     #### ADD MORE
     
@@ -25,7 +31,7 @@ def do_operation(operation_name, table_name, data_type, data):
     cur.close() 
     conn.close()
 
-def push_data(conn, table_name, data_type, data):
+def push_data(table_name, data_type, data):
     # Create or use an existing table to hold the JSON 
 
    
@@ -36,5 +42,5 @@ def push_data(conn, table_name, data_type, data):
     
 
 
-def create_table(conn, table_name, data_query = '(DATA VARIANT)'):
+def create_table(table_name, data_query = '(DATA VARIANT)'):
     cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name} {data_query};") 
