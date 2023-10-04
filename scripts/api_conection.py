@@ -1,5 +1,7 @@
 import requests
 import os
+import sys
+sys.path.append('../scripts/credentials')
 
 # Define the API URL
 url = "http://apilayer.net/api/live"

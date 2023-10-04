@@ -1,5 +1,7 @@
 import snowflake.connector 
 import os
+import sys
+sys.path.append('../scripts/credentials')
 
 def connect_snowflake():
     conn = snowflake.connector.connect(
