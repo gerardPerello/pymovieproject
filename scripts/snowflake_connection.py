@@ -1,7 +1,5 @@
 import snowflake.connector 
 import os
-import sys
-sys.path.append('../scripts/credentials')
 
 
 
@@ -18,6 +16,8 @@ def connect_snowflake():
     schema=os.getenv('SNOWSQL_SCH') ) 
     cur = conn.cursor()
 
+    print("Snowflake connection successfully.")
+
 def do_operation(operation_name, table_name, data_type, data):
     
     connect_snowflake()
@@ -31,16 +31,14 @@ def do_operation(operation_name, table_name, data_type, data):
     cur.close() 
     conn.close()
 
-def push_data(table_name, data_type, data):
-    # Create or use an existing table to hold the JSON 
+def push_data(table_name, data, data_query= 'SELECT PARSE_JSON(COLUMN1)'):
 
-   
     # Insert the JSON data into the table 
-    
-    json_str = response.replace("'", "''") #response.text.replace("'", "''") # Escape single quotes 
-    cur.execute(f"INSERT INTO {table_name} SELECT PARSE_JSON(COLUMN1) FROM VALUES ('{data}');") 
+    cur.execute(f"INSERT INTO {table_name} {data_query} FROM VALUES ('{data}');") 
     
 
 
 def create_table(table_name, data_query = '(DATA VARIANT)'):
+    
+    # Create or use an existing table to hold the JSON 
     cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name} {data_query};") 
