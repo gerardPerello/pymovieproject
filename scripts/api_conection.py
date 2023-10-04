@@ -23,7 +23,7 @@ def get(url, params, print_ = False):
         data = response.json()
         # Now 'data' contains the JSON response from the API
 
-        json_str = response.replace("'", "''")
+        json_str = response.replace("'", "''") #response.text.replace("'", "''") # Escape single quotes 
 
         if print_:
             print(data)

@@ -28,9 +28,8 @@ def push_data(conn, table_name, data_type, data):
     cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (DATA VARIANT);") 
    
     # Insert the JSON data into the table 
-    
+
     cur.execute(f"INSERT INTO {table_name} SELECT PARSE_JSON(COLUMN1) FROM VALUES ('{data}');")
-    
+
     # Close the connection 
-    cur.close() 
-    conn.close() 
+    conn.close()
