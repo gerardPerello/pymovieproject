@@ -3,6 +3,7 @@ import json
 import datetime as dt
 import pandas as pd
 from time import sleep
+import os
 
 # Get 
 file_path = '../data/currencies.json'
@@ -14,7 +15,6 @@ for a in df['Code'].values:
 
 #test
 
-my_api_key = '0b1558630f3f8beb22e890609d581131'
 
 url = 'http://api.currencylayer.com/historical'
 
@@ -27,7 +27,7 @@ while start_date <= end_date:
     print(start_date)
     
     params = {
-        'access_key' : my_api_key,
+        'access_key' : os.getenv('API_KEY'),
         'source' : 'USD',
         'currencies' : currencies,
         'date' : start_date
