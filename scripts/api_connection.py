@@ -1,7 +1,10 @@
+import datetime
+
 import requests
 import os
 import json
 import pandas as pd
+import random
 from credentials import credentials
 
 def get_currencies_names(n=-1):
@@ -9,8 +12,13 @@ def get_currencies_names(n=-1):
     file_path = "./data/currencies/currencies.json"
     df = pd.read_json(file_path)
 
+    currencies_list = df['Code'].to_list()
+
+    if n != -1:
+        random_items = random.sample(currencies_list, n)
+        currencies_list = random_items
     currencies = ""
-    for a in df['Code'].values:
+    for a in currencies_list:
         currencies += a + ","
 
     return currencies
@@ -51,13 +59,26 @@ def get(url, params, print_=False):
 
 
 def format_data(initial_json_data, save_ = False):
-    df = pd.DataFrame({
-        "timestamp": [initial_json_data["timestamp"]],
-        "date": [initial_json_data["date"]],
-        **initial_json_data["quotes"]
-    })
+
+    data_list = []
+
+    for data in initial_json_data:
+        # Create a dictionary for each item
+        item_data = {
+            "timestamp": data["timestamp"],
+            "date": data["date"],
+            **data["quotes"]
+        }
+
+        # Append the item dictionary to the list
+        data_list.append(item_data)
+
+    # Create a DataFrame from the list of dictionaries
+    df = pd.DataFrame(data_list)
 
     if save_:
-        df.to_json('output.json')
+
+        time = datetime.datetime.now()
+        df.to_json(f'./data/api_currencies/{time}_output.json')
 
     return df

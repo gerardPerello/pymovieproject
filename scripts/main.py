@@ -1,3 +1,5 @@
+from time import sleep
+
 import api_connection
 import datetime as dt
 import pandas as pd
@@ -6,18 +8,27 @@ import snowflake_connection as snw
 import streamlit as st
 
 
-def option1():
+def option1(url, date_from, date_to, n_currencies):
     st.session_state.messages.append("Loading Data From Internet")
 
-    currencies = api_conection.get_currencies_names()
+    currencies = api_connection.get_currencies_names(n_currencies)
 
-    params = api_conection.define_params(dt.date(2011, 1, 1), currencies)
+    total_data = []
 
-    url = "http://api.currencylayer.com/historical"
+    delta = dt.timedelta(days=1)
 
-    data = api_conection.get(url, params)
+    while date_from <= date_to:
+        params = api_connection.define_params(date_from, currencies)
 
-    return api_conection.format_data(data)
+        data = api_connection.get(url, params)
+
+        total_data.append(data)
+
+        date_from += delta
+
+        sleep(1)
+
+    return api_connection.format_data(total_data)
 
 
 def option2():
@@ -37,14 +48,25 @@ def option4():
 
 st.title("STOCK GAME")
 
+
 if 'data' not in st.session_state:
     st.session_state.data = None
 
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
-if st.button("Option 1"):
-    st.session_state.data = option1()
+col_url, col_date_from, col_date_to, col_n_currencies = st.columns(4)
+
+with col_url:
+    URL = st.text_input("URL", value="http://api.currencylayer.com/historical")
+with col_date_from:
+    date_from = st.date_input("date_from", value=dt.date(2011, 1, 1))
+with col_date_to:
+    date_to = st.date_input("date_to", value=dt.date(2011, 1, 1))
+with col_n_currencies:
+    n_currencies = st.selectbox("n_currencies", list(range(161)), index=5)
+if st.button("Load From URL"):
+    st.session_state.data = option1(URL, date_from, date_to, n_currencies)
 
 if st.button("Option 2"):
     st.session_state.data = option2()
