@@ -24,8 +24,6 @@ def do_operation(operation_name, table_name, data_type, data):
     
     if(operation_name == "PUSH"):
         push_data(table_name, data_type, data)
-
-    #### ADD MORE
     
     # Close the connection 
     cur.close() 

@@ -6,7 +6,7 @@ import pandas as pd
 import credentials
 import snowflake_connection as snw
 import streamlit as st
-
+import os
 
 def option1(url, date_from, date_to, n_currencies):
     st.session_state.messages.append("Loading Data From Internet")
@@ -31,9 +31,9 @@ def option1(url, date_from, date_to, n_currencies):
     return api_connection.format_data(total_data)
 
 
-def option2():
+def option2(url):
     st.session_state.messages.append("Loading Data From Computer")
-    return pd.read_json('./data/api_currencies/output.json')
+    return pd.read_json(url)
 
 
 def option3(data):
@@ -65,13 +65,29 @@ with col_date_to:
     date_to = st.date_input("date_to", value=dt.date(2011, 1, 1))
 with col_n_currencies:
     n_currencies = st.selectbox("n_currencies", list(range(161)), index=5)
+
 if st.button("Load From URL"):
     st.session_state.data = option1(URL, date_from, date_to, n_currencies)
 
-if st.button("Option 2"):
-    st.session_state.data = option2()
+col_url_local, col_button_local_selector = st.columns(2)
 
-if st.button("Option 3"):
+with col_url_local:
+
+    URL_local = st.text_input("URL LOCAL TO GET DATA", value = "./data/api_currencies/output.json")
+
+#with col_button_local_selector:
+    #uploaded_file = st.file_uploader("Select file", type=["json"])
+
+    #if uploaded_file is not None:
+        # Save the uploaded file to a temporary directory
+
+        # Get the local file path
+    #    URL_local = os.path.abspath(os.path.join(uploaded_file.name))"""
+
+if st.button("Load From Local"):
+    st.session_state.data = option2(URL_local)
+
+if st.button("Display Data"):
     if st.session_state.data is not None:
         option3(st.session_state.data)
     else:
