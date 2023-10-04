@@ -22,7 +22,9 @@ def get(url, params, print_ = False):
         
         data = response.json()
         # Now 'data' contains the JSON response from the API
-        
+
+        json_str = response.replace("'", "''")
+
         if print_:
             print(data)
 

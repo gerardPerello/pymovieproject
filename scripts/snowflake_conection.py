@@ -29,8 +29,7 @@ def push_data(conn, table_name, data_type, data):
    
     # Insert the JSON data into the table 
     
-    json_str = response.replace("'", "''") #response.text.replace("'", "''") # Escape single quotes 
-    cur.execute(f"INSERT INTO {table_name} SELECT PARSE_JSON(COLUMN1) FROM VALUES ('{data}');") 
+    cur.execute(f"INSERT INTO {table_name} SELECT PARSE_JSON(COLUMN1) FROM VALUES ('{data}');")
     
     # Close the connection 
     cur.close() 
