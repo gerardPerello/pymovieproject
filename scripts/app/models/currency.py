@@ -43,7 +43,7 @@ class Currency:
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM CURRENCY WHERE C_ID = ?", (c_id,))
+            cursor.execute("SELECT * FROM CURRENCIES WHERE C_ID = ?", (c_id,))
             result = cursor.fetchone()
             if result:
                 c_id, c_code, c_name, c_country, c_continent = result
@@ -61,7 +61,7 @@ class Currency:
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM CURRENCY")
+            cursor.execute("SELECT * FROM CURRENCIES")
             results = cursor.fetchall()
             currencies = []
             for result in results:

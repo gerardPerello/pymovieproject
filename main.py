@@ -1,6 +1,6 @@
 from time import sleep
 
-from scripts import api_connection
+from scripts import forex_api_connection
 import datetime as dt
 import pandas as pd
 import streamlit as st
@@ -8,19 +8,20 @@ from scripts.app import controller
 from scripts.app.logic import game_logic
 import os
 
+
 def option1(url, date_from, date_to, n_currencies):
     st.session_state.messages.append("Loading Data From Internet")
 
-    currencies = api_connection.get_currencies_names(n_currencies)
+    currencies, currencies_dict = forex_api_connection.get_currencies_names(n_currencies)
 
     total_data = []
 
     delta = dt.timedelta(days=1)
 
     while date_from <= date_to:
-        params = api_connection.define_params(date_from, currencies)
+        params = forex_api_connection.define_params(date_from, currencies)
 
-        data = api_connection.get(url, params)
+        data = forex_api_connection.get(url, params)
 
         total_data.append(data)
 
@@ -28,7 +29,7 @@ def option1(url, date_from, date_to, n_currencies):
 
         sleep(1)
 
-    return api_connection.format_data(total_data)
+    return forex_api_connection.format_data(total_data, currencies_dict)
 
 
 def option2(url):
@@ -38,6 +39,9 @@ def option2(url):
 
 def option3(data):
     st.session_state.messages.append("Displaying DataSet")
+    data_list = data.to_dict(orient='records')
+    message = controller.create_forex_history(data_list)
+    st.session_state.messages.append(message)
 
     st.dataframe(data)
 
@@ -48,9 +52,10 @@ def option4():
     st.dataframe(currencies_df)
     data_list = currencies_df.to_dict(orient='records')
     message = controller.create_currency(data_list)
-    print(message)
-st.title("STOCK GAME")
+    st.session_state.messages.append(message)
 
+
+st.title("STOCK GAME")
 
 if 'data' not in st.session_state:
     st.session_state.data = None
@@ -75,17 +80,16 @@ if st.button("Load From URL"):
 col_url_local, col_button_local_selector = st.columns(2)
 
 with col_url_local:
+    URL_local = st.text_input("URL LOCAL TO GET DATA", value="./data/api_currencies/output.json")
 
-    URL_local = st.text_input("URL LOCAL TO GET DATA", value = "./data/api_currencies/output.json")
+# with col_button_local_selector:
+# uploaded_file = st.file_uploader("Select file", type=["json"])
 
-#with col_button_local_selector:
-    #uploaded_file = st.file_uploader("Select file", type=["json"])
+# if uploaded_file is not None:
+# Save the uploaded file to a temporary directory
 
-    #if uploaded_file is not None:
-        # Save the uploaded file to a temporary directory
-
-        # Get the local file path
-    #    URL_local = os.path.abspath(os.path.join(uploaded_file.name))"""
+# Get the local file path
+#    URL_local = os.path.abspath(os.path.join(uploaded_file.name))"""
 
 if st.button("Load From Local"):
     st.session_state.data = option2(URL_local)

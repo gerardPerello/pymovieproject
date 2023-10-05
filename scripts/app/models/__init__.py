@@ -3,3 +3,4 @@ from .game import Game
 from .player import Player
 from .transaction import Transaction
 from .currency import  Currency
+from .forex_history import ForexHistory
