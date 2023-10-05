@@ -4,8 +4,6 @@ import os
 
 
 def connect_snowflake():
-    global conn
-    global cur
 
     conn = snowflake.connector.connect(
     user=os.getenv('SNOWSQL_USR'), 
@@ -14,29 +12,33 @@ def connect_snowflake():
     warehouse=os.getenv('SNOWSQL_WH'), 
     database=os.getenv('SNOWSQL_DB'),
     schema=os.getenv('SNOWSQL_SCH') ) 
-    cur = conn.cursor()
+
 
     print("Snowflake connection successfully.")
 
+    return conn
+
 def do_operation(operation_name, table_name, data_type, data):
-    
-    connect_snowflake()
-    
+
+    conn = connect_snowflake()
+    cur = conn.cursor()
+
     if(operation_name == "PUSH"):
-        push_data(table_name, data_type, data)
-    
-    # Close the connection 
-    cur.close() 
+        push_data(cur, table_name, data_type, data)
+
+    # Close the connection
+    cur.close()
     conn.close()
 
-def push_data(table_name, data, data_query= 'SELECT PARSE_JSON(COLUMN1)'):
+def push_data(cur, table_name, data, data_query= 'SELECT PARSE_JSON(COLUMN1)'):
 
-    # Insert the JSON data into the table 
-    cur.execute(f"INSERT INTO {table_name} {data_query} FROM VALUES ('{data}');") 
-    
+    # Insert the JSON data into the table
+
+    cur.execute(f"INSERT INTO {table_name} {data_query} FROM VALUES ('{data}');")
 
 
-def create_table(table_name, data_query = '(DATA VARIANT)'):
-    
-    # Create or use an existing table to hold the JSON 
-    cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name} {data_query};") 
+
+def create_table(cur, table_name, data_query = '(DATA VARIANT)'):
+
+    # Create or use an existing table to hold the JSON
+    cur.execute(f"CREATE TABLE IF NOT EXISTS {table_name} {data_query};")
