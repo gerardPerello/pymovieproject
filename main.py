@@ -1,11 +1,11 @@
 from time import sleep
 
-import api_connection
+from scripts import api_connection
 import datetime as dt
 import pandas as pd
-import credentials
-import snowflake_connection as snw
 import streamlit as st
+from scripts.app import controller
+from scripts.app.logic import game_logic
 import os
 
 def option1(url, date_from, date_to, n_currencies):
@@ -43,9 +43,12 @@ def option3(data):
 
 
 def option4():
-    st.session_state.messages.append("Option 4")
-
-
+    st.session_state.messages.append("Push Currencies")
+    currencies_df = pd.read_json('./data/currencies/currencies.json')
+    st.dataframe(currencies_df)
+    data_list = currencies_df.to_dict(orient='records')
+    message = controller.create_currency(data_list)
+    print(message)
 st.title("STOCK GAME")
 
 
