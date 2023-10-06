@@ -4,7 +4,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 st.set_page_config(
     page_title="Good luck!",
     page_icon="📈",
@@ -12,7 +11,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
+def next_turn():
+
+    p_id = st.session_state.player_id
+
 st.header("PyStock Market")
+
+
 
 # STOCK MARKET CHART
 st.line_chart(
