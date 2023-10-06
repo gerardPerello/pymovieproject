@@ -74,3 +74,65 @@ class ForexHistory:
         finally:
             cursor.close()
             connection.close()
+
+    @classmethod
+    def delete(cls, timestamp_id, currency_id):
+        connection = connect_snowflake()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                "DELETE FROM FOREX_HISTORY WHERE FH_TIMESTAMP_ID = %s AND FH_CURRENCY_ID = %s",
+                (timestamp_id, currency_id)
+            )
+            connection.commit()
+            if cursor.rowcount > 0:
+                return {'message': 'Forex History entry deleted successfully'}
+            else:
+                return {'message': 'Forex History entry not found'}
+        except Exception as e:
+            return {'error': str(e)}
+        finally:
+            cursor.close()
+            connection.close()
+
+    @classmethod
+    def update(cls, timestamp_id, currency_id, new_data):
+        connection = connect_snowflake()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                "UPDATE FOREX_HISTORY SET FH_VALUE_TO_DOLLAR = %s WHERE FH_TIMESTAMP_ID = %s AND FH_CURRENCY_ID = %s",
+                (new_data['value_to_dollar'], timestamp_id, currency_id)
+            )
+            connection.commit()
+            if cursor.rowcount > 0:
+                return {'message': 'Forex History entry updated successfully'}
+            else:
+                return {'message': 'Forex History entry not found'}
+        except Exception as e:
+            return {'error': str(e)}
+        finally:
+            cursor.close()
+            connection.close()
+
+    @classmethod
+    def get_by_currency(cls, currency_id):
+        connection = connect_snowflake()
+        cursor = connection.cursor()
+        try:
+            cursor.execute("SELECT * FROM FOREX_HISTORY WHERE FH_CURRENCY_ID = %s", (currency_id,))
+            results = cursor.fetchall()
+            if results:
+                forex_histories = []
+                for result in results:
+                    timestamp_id, date, currency_id, value_to_dollar = result
+                    forex_history = cls(timestamp_id, date, currency_id, value_to_dollar)
+                    forex_histories.append(forex_history)
+                return forex_histories
+            else:
+                return None
+        except Exception as e:
+            return {'error': str(e)}
+        finally:
+            cursor.close()
+            connection.close()

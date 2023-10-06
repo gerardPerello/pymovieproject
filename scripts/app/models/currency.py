@@ -2,12 +2,12 @@ from ...snowflake_connection import connect_snowflake
 
 
 class Currency:
-    def __init__(self, c_id, c_code, c_name, c_country, c_continent):
-        self.c_id = c_id
-        self.c_code = c_code
-        self.c_name = c_name
-        self.c_country = c_country
-        self.c_continent = c_continent
+    def __init__(self, id, code, name, country, continent):
+        self.id = id
+        self.code = code
+        self.name = name
+        self.country = country
+        self.continent = continent
 
     @classmethod
     def create(cls, data_list):
@@ -39,15 +39,15 @@ class Currency:
             connection.close()
 
     @classmethod
-    def get_by_id(cls, c_id):
+    def get_by_id(cls, id):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM CURRENCIES WHERE C_ID = ?", (c_id,))
+            cursor.execute("SELECT * FROM CURRENCIES WHERE C_ID = %s", (id,))
             result = cursor.fetchone()
             if result:
-                c_id, c_code, c_name, c_country, c_continent = result
-                return cls(c_id, c_code, c_name, c_country, c_continent)
+                id, code, name, country, continent = result
+                return cls(id, code, name, country, continent)
             else:
                 return None
         except Exception as e:
@@ -65,8 +65,8 @@ class Currency:
             results = cursor.fetchall()
             currencies = []
             for result in results:
-                c_id, c_code, c_name, c_country, c_continent = result
-                currency = cls(c_id, c_code, c_name, c_country, c_continent)
+                id, code, name, country, continent = result
+                currency = cls(id, code, name, country, continent)
                 currencies.append(currency)
             return currencies
         except Exception as e:
