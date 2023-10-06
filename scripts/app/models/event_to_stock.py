@@ -8,6 +8,12 @@ class Event_to_Stock:
 
     @classmethod
     def create(cls, data):
+
+        required_fields = ['stock_id', 'event_id', 'game_id']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required event_to_stock data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:

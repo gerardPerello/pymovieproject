@@ -10,7 +10,7 @@ class Player:
         required_fields = ['name']
 
         if not all(field in data for field in required_fields):
-            return {'error': 'Required player data is missing'}
+            return {'message': 'Required player data is missing'}
 
         connection = connect_snowflake()
         cursor = connection.cursor()

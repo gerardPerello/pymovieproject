@@ -12,6 +12,12 @@ class Event:
 
     @classmethod
     def create(cls, data):
+
+        required_fields = ['event_id', 'type_event', 'content_event', 'percentage_or_total', 'percentage_change', 'total_change']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required game data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:

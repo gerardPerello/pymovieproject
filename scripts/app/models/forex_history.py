@@ -14,7 +14,7 @@ class ForexHistory:
 
         for data in data_list:
             if not all(field in data for field in required_fields):
-                return {'error': 'Required currency data is missing'}
+                return {'message': 'Required currency data is missing'}
 
         connection = connect_snowflake()
         cursor = connection.cursor()
@@ -32,7 +32,7 @@ class ForexHistory:
 
             return {'message': 'Forex_History created successfully'}
         except Exception as e:
-            return {'error': str(e)}
+            return {'message': str(e)}
         finally:
             cursor.close()
             connection.close()
@@ -90,7 +90,7 @@ class ForexHistory:
             else:
                 return {'message': 'Forex History entry not found'}
         except Exception as e:
-            return {'error': str(e)}
+            return {'message': str(e)}
         finally:
             cursor.close()
             connection.close()
@@ -110,7 +110,7 @@ class ForexHistory:
             else:
                 return {'message': 'Forex History entry not found'}
         except Exception as e:
-            return {'error': str(e)}
+            return {'message': str(e)}
         finally:
             cursor.close()
             connection.close()
@@ -132,7 +132,7 @@ class ForexHistory:
             else:
                 return None
         except Exception as e:
-            return {'error': str(e)}
+            return {'message': str(e)}
         finally:
             cursor.close()
             connection.close()

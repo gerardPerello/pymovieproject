@@ -9,13 +9,19 @@ class Portfolio:
         self.amount = amount
 
     @classmethod
-    def create(cls, player_id, game_id, turn_id, stock_id, amount):
+    def create(cls, data):
+
+        required_fields = ['player_id', 'game_id', 'turn_id', 'stock_id', 'amount']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required portfolio data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
             cursor.execute(
                 "INSERT INTO PORTFOLIO (po_player_id, po_game_id, po_stock_id, po_turn_id, po_amount) VALUES (%s, %s, %s, %s, %s)",
-                (player_id, game_id, stock_id, turn_id, amount)
+                (data['player_id'], data['game_id'], data['turn_id'], data['stock_id'], data['amount'])
             )
             connection.commit()
             return {'message': 'Portfolio created successfully'}

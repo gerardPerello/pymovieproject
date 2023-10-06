@@ -6,13 +6,19 @@ class Stock:
         self.name = name
 
     @classmethod
-    def create(cls, name):
+    def create(cls, data):
+
+        required_fields = ['name']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required stock data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
             cursor.execute(
                 "INSERT INTO STOCKS (s_name) VALUES (%s)",
-                (name)
+                (data['name'])
             )
             connection.commit()
             return {'message': 'Stock created successfully'}

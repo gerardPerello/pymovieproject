@@ -8,13 +8,19 @@ class StockMarket:
         self.stock_value = stock_value
 
     @classmethod
-    def create(cls, stock_id, game_id, turn_id, stock_value):
+    def create(cls, data):
+
+        required_fields = ['stock_id','game_id','turn_id', 'stock_value']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required stock_market data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
             cursor.execute(
                 "INSERT INTO STOCK_MARKET (sm_stock_id, sm_game_id, sm_turn_id, sm_stock_value) VALUES (%s, %s, %s, %s)",
-                (stock_id, game_id, turn_id, stock_value)
+                (data['stock_id'], data['game_id'], data['turn_id'], data['stock_value'])
             )
             connection.commit()
             return {'message': 'StockMarket created successfully'}

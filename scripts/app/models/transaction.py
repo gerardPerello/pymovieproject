@@ -15,7 +15,13 @@ class Transaction:
 
     @classmethod
     def create(cls, data):
-        # Note: Make sure to validate 'data' before executing query to prevent SQL injection
+
+        required_fields = ['game_id', 'turn_id', 'player_id', 'stock_id',
+                           'amount_stock','amount_money','market','type']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required transaction data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
