@@ -60,14 +60,20 @@ if st.session_state.submitted_game_setup:
 
 # CALCULATE GET AND STORE CURRENCY DATA IN A PANDAS DATAFRAME
 # - which will need to persist
-    if 'curr_data' not in st.session_state:
+    # if 'curr_data' not in st.session_state:
 
-        curr_1 = 20 * np.random.randn(st.session_state.turncount) + 400
-        curr_2 = 40 * np.random.randn(st.session_state.turncount) + 300
-        curr_data = pd.DataFrame(
-            {'USD': curr_1,
-            'JPY': curr_2,
-            }
-        )
-        st.session_state.curr_data = curr_data
+    curr_1 = 20 * np.random.randn(st.session_state.turncount) + 400
+    curr_2 = 200 * np.random.randn(st.session_state.turncount) + 300
+    curr_3 = 40 * np.random.randn(st.session_state.turncount) + 300
+    curr_4 = 100 * np.random.randn(st.session_state.turncount) + 1000
+    curr_5 = 40 * np.random.randn(st.session_state.turncount) + 100
+    curr_data = pd.DataFrame(
+        {'USD': curr_1,
+        'JPY': curr_2,
+        'CAD': curr_3,
+        'GBP': curr_4,
+        'BTX': curr_5,
+        }
+    )
+    st.session_state.curr_data = curr_data
 
