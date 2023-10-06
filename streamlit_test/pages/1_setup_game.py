@@ -43,13 +43,13 @@ with st.form('form1'):
     # number of players
     st.session_state.playercount = st.slider('How many people are playing?', 0, MAXPLAYERS, 4)
 
-    submitted = st.form_submit_button("Submit")
-    if submitted:
+    st.session_state.submitted_game_setup = st.form_submit_button("Submit")
+    if st.session_state.submitted_game_setup :
         st.write('Game options submitted.')
         st.write(f'Your game will take {st.session_state.turncount} turns and {st.session_state.turncount*st.session_state.minutesperturn} minutes.')
 
 
-if submitted:
+if st.session_state.submitted_game_setup:
 # SEND GAME SETUP TO SNOWFLAKE
 # - and get game id
 # 

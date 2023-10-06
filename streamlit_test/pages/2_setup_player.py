@@ -12,14 +12,19 @@ st.set_page_config(
 
 st.write("# Player Setup")
 
-player_options = [f'player {i}' for i in range(1, st.session_state.playercount+1)]
-
-playing = selectbox(
-    'Which player are you?', 
-    player_options
-)
 
 
-st.write('You selected:', playing)
+# Display the chart only if a player ID is selected
+if st.session_state.submitted_game_setup:
+    # Filter the DataFrame based on the selected player ID
+    player_options = [f'player {i}' for i in range(1, st.session_state.playercount+1)]
 
-st.session_state.playing = playing
+    playing = selectbox(
+        'Which player are you?', 
+        player_options
+    )
+    st.write('You selected:', playing)
+
+    st.session_state.playing = playing
+else:
+    st.write('Please wait for someone to set up a game.')
