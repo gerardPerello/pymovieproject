@@ -13,6 +13,7 @@ st.set_page_config(
 # SETUP PARAMETERS
 MAXTURNS = 20
 MAXPLAYERS = 10
+MAXSTOCKS = 10
 
 st.write("# Game Setup 📈")
 
@@ -37,7 +38,7 @@ with st.form('form1'):
     st.session_state.event_frequency = st.select_slider('How many turns between events?', options=[1, 2, 3])
 
     # number of stocks
-    st.session_state.stockscount = st.slider('How many stocks do you want in your game?', 0, 30, 15)
+    st.session_state.stockscount = st.slider('How many stocks do you want in your game?', 0, MAXSTOCKS, 5)
 
     # number of players
     st.session_state.playercount = st.slider('How many people are playing?', 0, MAXPLAYERS, 4)
