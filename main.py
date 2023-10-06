@@ -9,7 +9,7 @@ from scripts.app.logic import game_logic
 import os
 
 
-def option1(url, date_from, date_to, n_currencies):
+def option1(url, date_from, date_to):
     st.session_state.messages.append("Loading Data From Internet")
 
     currencies, currencies_dict = forex_api_connection.get_currencies_names(n_currencies)
@@ -37,11 +37,12 @@ def option2(url):
     return pd.read_json(url)
 
 
-def option3(data):
+def option3(data, push_data):
     st.session_state.messages.append("Displaying DataSet")
     data_list = data.to_dict(orient='records')
-    message = controller.create_forex_history(data_list)
-    st.session_state.messages.append(message)
+    if push_data:
+        message = controller.create_forex_history(data_list)
+        st.session_state.messages.append(message)
 
     st.dataframe(data)
 
@@ -63,7 +64,7 @@ if 'data' not in st.session_state:
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
-col_url, col_date_from, col_date_to, col_n_currencies = st.columns(4)
+col_url, col_date_from, col_date_to = st.columns(3)
 
 with col_url:
     URL = st.text_input("URL", value="http://api.currencylayer.com/historical")
@@ -71,11 +72,11 @@ with col_date_from:
     date_from = st.date_input("date_from", value=dt.date(2011, 1, 1))
 with col_date_to:
     date_to = st.date_input("date_to", value=dt.date(2011, 1, 1))
-with col_n_currencies:
-    n_currencies = st.selectbox("n_currencies", list(range(161)), index=5)
+#with col_n_currencies:
+#    n_currencies = st.selectbox("n_currencies", list(range(161)), index=5)
 
 if st.button("Load From URL"):
-    st.session_state.data = option1(URL, date_from, date_to, n_currencies)
+    st.session_state.data = option1(URL, date_from, date_to)
 
 col_url_local, col_button_local_selector = st.columns(2)
 
@@ -94,13 +95,20 @@ with col_url_local:
 if st.button("Load From Local"):
     st.session_state.data = option2(URL_local)
 
-if st.button("Display Data"):
-    if st.session_state.data is not None:
-        option3(st.session_state.data)
-    else:
-        st.warning("Please select an option before using Option 3.")
+col_but_dis, col_check_push = st.columns(2)
+with col_check_push:
+    push_data = st.checkbox("PushData")
+with col_but_dis:
+    if st.button("Display Data "):
 
-if st.button("Option 4"):
+
+
+        if st.session_state.data is not None:
+            option3(st.session_state.data, push_data)
+        else:
+            st.warning("Please select an option before using Option 3.")
+
+if st.button("Upload Currencies", disabled=True):
     option4()
 
 indexed_messages = [f"{i + 1}: {message}" for i, message in enumerate(st.session_state.messages)]
