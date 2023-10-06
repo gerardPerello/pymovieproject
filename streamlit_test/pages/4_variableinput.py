@@ -11,7 +11,7 @@ grid = st.columns(1)
 # Function to create a row of widgets (with row number input to assure unique keys)
 def add_row(row):
     with grid[0]:
-        st.text_input('player_name', key=f'input_name{row}')
+        st.text_input('pla', key=f'input_name{row}')
 
 # Loop to create rows of input widgets
 for r in range(num_rows):

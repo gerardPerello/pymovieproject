@@ -24,7 +24,9 @@ st.markdown(
 """
 )
 
-if st.button("Click here to begin playing"):
-    switch_page("play")
+# GO TO PLAYER SETUP
 if st.button("Click here to set up a game!"):
-    switch_page("Setup")
+    switch_page("setup game")
+if st.button("Click here to join a game"):
+    switch_page("setup player")
+
