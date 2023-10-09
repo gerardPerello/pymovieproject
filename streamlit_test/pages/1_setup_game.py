@@ -15,6 +15,10 @@ MAXTURNS = 20
 MAXPLAYERS = 10
 MAXSTOCKS = 10
 
+# CREATE A GAME BRAIN
+if 'game_brain' not in st.session_state:
+    pass
+
 st.write("# Game Setup ⚙️")
 st.write('Select your desired game options and create your game.')
 st.write('The game parameters will be sent to Snowflake and a game will be created.')
@@ -54,18 +58,11 @@ with st.form('form1'):
 
 
 if st.session_state.submitted_game_setup:
-# SEND GAME SETUP TO SNOWFLAKE
-# - and get game id
-# 
+    # SEND TO SERVER/SNOWFLAKE
 
-# GET PLAYER IDS FROM SNOWFLAKE
 
-# ESTABLISH SETTINGS AS SESSION STATE VARIABLES
 
-# CALCULATE GET AND STORE CURRENCY DATA IN A PANDAS DATAFRAME
-# - which will need to persist
-    # if 'curr_data' not in st.session_state:
-
+    # GET CURRENCY DATA
     curr_1 = 20 * np.random.randn(st.session_state.turncount) + 400
     curr_2 = 200 * np.random.randn(st.session_state.turncount) + 300
     curr_3 = 40 * np.random.randn(st.session_state.turncount) + 300

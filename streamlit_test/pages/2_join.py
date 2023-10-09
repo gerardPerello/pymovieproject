@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from streamlit_extras.no_default_selectbox import selectbox
+from itertools import count
 
 st.set_page_config(
     page_title="Join",
@@ -13,26 +14,31 @@ st.set_page_config(
 st.markdown("# Select Game and Player")
 st.markdown("Select an available game, and select your player id")
 
-# Display the chart only if a player ID is selected
-if st.session_state.submitted_game_setup:
+# GET GAME IDs / NAMES 
+# I want a dict: game : [players]
 
-    # Choose a game
-    game_options = [f'game {i}' for i in range(1, st.session_state.playercount+1)]
-    game = selectbox(
-        'Which player are you?', 
-        game_options
-    )
-    st.write('You selected:', game)
-    st.session_state.game = game
+counter = count(1)
+game_options = {f'game {i+1}':[next(counter), next(counter), next(counter)] for i in range(4)}
 
+# Choose a game
+game = selectbox(
+    'Which active game do you want to join?', 
+    game_options
+)
+st.write('You selected:', game)
+st.session_state.game = game
+
+# Game is selected
+if game:
+    # GET PLAYER IDS
+    player_options = [f'player {i}' for i in game_options[game]]
+    
     # Choose a player
-    player_options = [f'player {i}' for i in range(1, st.session_state.playercount+1)]
     playing = selectbox(
         'Which player are you?', 
         player_options
     )
+
     st.write('You selected:', playing)
     st.session_state.playing = playing
 
-else:
-    st.write('Please wait for someone to set up a game.')
