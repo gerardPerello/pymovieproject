@@ -49,21 +49,7 @@ class Player:
 
     @classmethod
     def get_by_id(cls, player_id):
-        connection = connect_snowflake()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT * FROM PLAYERS WHERE pl_id = %s", (player_id,))
-            result = cursor.fetchone()
-            if result:
-                id,name = result
-                return cls(id,name)
-            else:
-                return None
-        except Exception as e:
-            return {'error': str(e)}
-        finally:
-            cursor.close()
-            connection.close()
+        pass
 
     @classmethod
     def delete(cls, player_id):
