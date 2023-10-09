@@ -14,12 +14,13 @@ def create():
     connection = connect_snowflake()
     cursor = connection.cursor()
     try:
-        cursor.execute("""
+        result = cursor.execute("""
             INSERT INTO PLAYERS (
                 pl_name
             ) VALUES (%s)
         """, (data['name']))
         connection.commit()
+        print(result)
         return jsonify({'message': 'Player created successfully'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500

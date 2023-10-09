@@ -1,4 +1,4 @@
-from ..sockets import events
+
 from ..models import *
 import random
 
@@ -16,11 +16,29 @@ class GameBrain:
         self.random_weights_per_stock = dict()
         self.ready_players = set()
         self.connected_players = set()
+        self.players = dict()
+        self.setupPlayers()
         self.new_turn_callback = new_turn_callback
         print("Creating")
 
+    def setupPlayers(self):
+        # Create the players.
+        for i in range(1, self.game.player_count + 1):
+            new_player = Player.get_by_id(i)
+            print(new_player)
+            if new_player == None:
+                message = Player.create(f"Player_{i}")
+                print(message)
+                new_player = Player(i, f"Player_{i}")
+
+            self.players[i] = new_player
+        print(self.players)
+        # Create the playersToThisGame
+        for player_id in self.players:
+            message = PlayersToGame.create(self.game.id, player_id, 1, self.game.starting_money)
+            print(message)
+
     def setupGame(self):
-        pass
 
         # Select the N random stocksID's that are going to be in to the game
         allCurrencies = Currency.get_all()

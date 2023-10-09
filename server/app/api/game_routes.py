@@ -18,21 +18,19 @@ def create():
     connection = connect_snowflake()
     cursor = connection.cursor()
     try:
-        cursor.execute("""
+        result = cursor.execute("""
             INSERT INTO GAMES (
                 g_name, g_total_turns, g_sec_per_turn, g_starting_money, 
-                g_turns_between_events, g_player_count, g_stocks_count
+                g_turns_between_events, g_player_count, g_stocks_count, g_is_open
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (data['name'], data['total_turns'], data['sec_per_turn'], data['starting_money'],
-              data['turns_between_events'], data['player_count'], data['stock_count']))
+              data['turns_between_events'], data['player_count'], data['stock_count'], True))
         connection.commit()
-
         cursor.execute("SELECT * FROM GAMES WHERE g_name = %s", (data['name'],))
         result = cursor.fetchone()
         if result:
             id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_ = result
-            new_game = GameBrain("game_setup",
-                                 Game(id, name, total_turns, sec_per_turn, starting_money, turns_between_events,
+            new_game = GameBrain(Game(id, name, total_turns, sec_per_turn, starting_money, turns_between_events,
                                       player_count, stock_count, open_),
                                  new_turn_callback=lambda: handle_next_turn(id))
             gameBrains[1] = new_game
@@ -63,7 +61,24 @@ def get_all():
         connection.close()
 
 
-@game_blueprint.route('/game/<string:game_name>', methods=['GET'])
+@game_blueprint.route('/game/id/<int:game_id>', methods=['GET'])
+def get_by_id(game_id):
+    connection = connect_snowflake()
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT * FROM GAMES WHERE g_id = %s", (game_id,))
+        result = cursor.fetchone()
+        if result is None:
+            return jsonify({'error': 'game not found'}), 404
+        return jsonify({'game': result}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@game_blueprint.route('/game/name/<string:game_name>', methods=['GET'])
 def get_by_name(game_name):
     connection = connect_snowflake()
     cursor = connection.cursor()
