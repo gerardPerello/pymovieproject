@@ -7,15 +7,16 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from client.game_brain import GameBrain
 
-sns.set_style("whitegrid")
-sns.set_context("paper")
-
 st.set_page_config(
     page_title="Good luck!",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="collapsed" 
 )
+
+# Settings for seaborn
+sns.set_style("whitegrid")
+sns.set_context("paper")
 
 # Game states are 
 #   0: BEFORE SETUP
@@ -24,40 +25,30 @@ st.set_page_config(
 #   3: BETWEEN TURNS
 #   4: GAME END
 
-def reset_turn():
-    # How will this work with game brain?
-    st.session_state.game_brain.state = 1 # DURING TURNS
-
-# GUI
 st.header("PyStockMarket")
-
-
-# if 'game_brain' in st.session_state: # game brain object has been created
-
-    # while st.session_state.game_state == 0:
-    #     # query for setup from Server
-    #     pass
-
 
 # GAME NOT JOINED
 if 'game_brain' not in st.session_state:
     st.write("A game has not been joined.")
 
-
+# HAS VISITED SETUP PAGE 
 if 'game_brain' in st.session_state:
-    st.write('It is turn', st.session_state.game_brain.turn)
+
     st.write(f'You are player {st.session_state.game_brain.player} in game {st.session_state.game_brain.game}')
 
     # WAITING FOR GAME START
     if st.session_state.game_brain.state == 1: 
         st.markdown("Please wait until game setup is completed")
-        st.write("The game state is", st.session_state.game_brain.state)
         st.session_state.game_brain.setup_game()
-        st.button('Click here to begin the game', on_click=st.session_state.game_brain.begin_game)
+        st.button(
+            'Click here to begin the game', 
+            on_click=st.session_state.game_brain.begin_game
+            )
 
 
     # DURING TURN, BETWEEN TURN, GAME END
     if st.session_state.game_brain.state not in [0, 1]: 
+        st.write('It is turn', st.session_state.game_brain.turn)
         st.write("The game state is", st.session_state.game_brain.state)
 
         # DATA
@@ -86,7 +77,6 @@ if 'game_brain' in st.session_state:
     # DURING TURN
     if st.session_state.game_brain.state == 2:
         balance = 5000
-        st.write("The game state is", st.session_state.game_brain.state)
         st.write(f"Your current balance is {balance:.2f} dollars")
         col1, col2 = st.columns(2)
 
@@ -103,7 +93,13 @@ if 'game_brain' in st.session_state:
                 st.write(f"You will ask for {total} to sell {chosen_stock}")
             
             if total <= balance or buy_or_sell == 'Sell':
-                st.button("Make Order", on_click=st.session_state.game_brain.send_order)
+                st.button(
+                    "Make Order", 
+                    on_click=st.session_state.game_brain.send_order
+                )
+            else:
+                st.write("You cannot afford this order.")
+                
         with col2:
             df = pd.DataFrame(
                 {
@@ -125,13 +121,21 @@ if 'game_brain' in st.session_state:
             st.dataframe(df, hide_index=True)
 
         # NEXT TURN BUTTON
-        st.button('Next Turn', on_click=st.session_state.game_brain.next_turn)
+        st.button(
+            'Next Turn', 
+            on_click=st.session_state.game_brain.next_turn
+            )
 
         st.markdown('---')
         st.markdown('### Trades closed last turn')
+        # st.session_state.game_brain.get_sell_orders()
 
     
     if st.session_state.game_brain.state == 3: # BETWEEN TURNS
         st.write('Last turn, the offers were bla bla bla and they closed at bla bla bla.')
         st.write('Please wait while the next turn loads.')
-        st.button('Click here to move on to the next turn', on_click=st.session_state.game_brain.compute_next_turn)
+        
+        st.button(
+            'Click here to move on to the next turn', 
+            on_click=st.session_state.game_brain.compute_next_turn
+            )

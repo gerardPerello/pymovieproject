@@ -3,7 +3,10 @@ import numpy as np
 from time import sleep
 
 class GameBrain:
+    """This client-side class manages game states and game data throughout the game. 
 
+    It stores data in a format compatible with the database and contains a variety of functions for updating data and managing game states. 
+    """
     def __init__(self):
         self.game = None    # Game is another object that contains all game settings and identifiers
         self.state = 0      # current game state
@@ -15,15 +18,21 @@ class GameBrain:
         self.stocks = {}  
         self.currencies = {} 
 
+    # def __init__(self):
+    #     pass
 
-    def create_and_push_game(self, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count):
+    def create_and_push_game(self, name, total_turns, starting_money, turns_between_events, player_count, stock_count):
+
+        # CREATE A GAME OBJECT 
         #self.game = Game(*data)
         #Convert game to data
         #data = game.to_dict()
-        self.game = Game(1, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
+        self.game = Game(1, name, total_turns, 1,  starting_money, turns_between_events, player_count, stock_count)
 
         #Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
-        #         #self.game = controller.get_name(name)
+        #self.game = controller.get_name(name)
+
+        # SEND TO SNOWFLAKE
 
     def get_open_games(self):
         # I want a dict: game : [players]
@@ -68,7 +77,7 @@ class GameBrain:
         if self.turn < 20:
             self.turn += 1
             self.game_state = 3 # BETWEEN TURNS
-            self.compute_next_turn()
+            # self.compute_next_turn()
             # To game end
         elif self.turn == 20:
             self.end_game()

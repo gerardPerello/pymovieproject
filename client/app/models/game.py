@@ -3,7 +3,11 @@ import requests
 import json
 
 class Game:
+    """_summary_
 
+    Returns:
+        _type_: _description_
+    """
     url = "http://172.20.10.2:5000/models/game/"
 
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
@@ -18,6 +22,11 @@ class Game:
         self.stock_count = stock_count
 
     def to_dict(self):
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
         return {
             'id': self.id,
             'name': self.name,
