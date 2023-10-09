@@ -1,12 +1,20 @@
 from flask import Blueprint, jsonify, request
 from ..snowflake_connection import connect_snowflake
+from ..logic import gameBrains
+from ..logic import GameBrain
+from ..models import Game
+from ..sockets.events import handle_next_turn
 # Blueprint
+import json
+
 game_blueprint = Blueprint('game', __name__)
 
 
 @game_blueprint.route('/game', methods=['POST'])
 def create():
     data = request.get_json()
+    print(data)
+    print(data['name'])
     connection = connect_snowflake()
     cursor = connection.cursor()
     try:
@@ -18,7 +26,20 @@ def create():
         """, (data['name'], data['total_turns'], data['sec_per_turn'], data['starting_money'],
               data['turns_between_events'], data['player_count'], data['stock_count']))
         connection.commit()
-        return {'message': 'Game created successfully'}
+
+        cursor.execute("SELECT * FROM GAMES WHERE g_name = %s", (data['name'],))
+        result = cursor.fetchone()
+        if result:
+            id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count = result
+            new_game = GameBrain("game_setup",
+                                 Game(id, name, total_turns, sec_per_turn, starting_money, turns_between_events,
+                                 player_count,stock_count),
+                                 new_turn_callback=lambda: handle_next_turn(id))
+            gameBrains[1] = new_game
+            print(id)
+        else:
+            return None
+        return jsonify({'message': 'Game Created', 'game_id': id}), 201
     except Exception as e:
         return {'message': str(e)}
     finally:
@@ -33,6 +54,7 @@ def get_all():
     try:
         cursor.execute("SELECT * FROM GAMES")
         results = cursor.fetchall()
+        print(gameBrains[1])
         return jsonify({'games': results}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

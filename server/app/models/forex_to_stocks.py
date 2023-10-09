@@ -8,13 +8,7 @@ class ForexToStock:
         self.currency_weight = currency_weight
 
     @classmethod
-    def create(cls, data):
-
-        required_fields = ['stock_id', 'currency_id', 'currency_weight']
-
-        if not all(field in data for field in required_fields):
-            return {'message': 'Required forex_to_sticks data is missing'}
-
+    def create(cls, stock_id, currency_id, currency_weight):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
@@ -22,7 +16,7 @@ class ForexToStock:
                         (fs_stock_id, fs_currency_id, fs_currency_weight)
                        VALUES (%s, %s, %s)"""
             cursor.execute(query, (
-                data['stock_id'], data['currency_id'], data['currency_weight']
+                stock_id, currency_id, currency_weight
             ))
             connection.commit()
             return {'message': 'Forex To Stocks created successfully'}
