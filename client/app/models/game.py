@@ -4,11 +4,7 @@ import json
 
 
 class Game:
-    """_summary_
 
-    Returns:
-        _type_: _description_
-    """
     url = "http://127.0.0.1:5000/models/game/"
 
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
@@ -24,11 +20,6 @@ class Game:
         self.open_ = open_
 
     def to_dict(self):
-        """_summary_
-
-        Returns:
-            _type_: _description_
-        """
         return {
             'id': self.id,
             'name': self.name,
@@ -45,6 +36,7 @@ class Game:
     @classmethod
     def create(cls, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_):
 
+        # PACKAGE AND SEND TO SERVER
         new_url = cls.url + 'games'
         data = cls(
             0, name, total_turns, sec_per_turn,
