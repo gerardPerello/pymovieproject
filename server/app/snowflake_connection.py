@@ -1,7 +1,8 @@
 import snowflake.connector 
 import os
+from .credentials import credentials
 
-
+credentials
 def connect_snowflake():
     conn = snowflake.connector.connect(
     user=os.getenv('SNOWSQL_USR'), 
