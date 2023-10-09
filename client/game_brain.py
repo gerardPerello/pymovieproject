@@ -31,10 +31,10 @@ class GameBrain:
         #self.game = Game(*data)
         #Convert game to data
         #data = game.to_dict()
-        self.game = Game(1, name, total_turns, sec_per_turn,  starting_money, turns_between_events, player_count, stock_count)
-        Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
+        self.game = Game(1, name, total_turns, sec_per_turn,  starting_money, turns_between_events, player_count, stock_count, open_=True)
+        Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_=True)
         
-        self.game = Game.get_by_id()
+        # self.game = Game.get_by_id()
 
         #Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
         #self.game = controller.get_name(name)
@@ -84,6 +84,7 @@ class GameBrain:
 
             self.game_state = 2
         elif self.turn == 20:
+            print('Game ending')
             self.end_game()
 
 
@@ -96,3 +97,9 @@ class GameBrain:
     def get_sell_orders(self):
         pass
 
+    def get_final_scores(self):
+        pass
+
+
+    def get_portfolio(self):
+        pass

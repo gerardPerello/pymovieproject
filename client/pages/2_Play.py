@@ -144,3 +144,9 @@ if 'game_brain' in st.session_state:
             'Click here to move on to the next turn', 
             on_click=st.session_state.game_brain.compute_next_turn
             )
+
+    if st.session_state.game_brain.state == 4:
+        st.markdown("## Final Scores")
+        scores = st.session_state.game_brain.get_final_scores()
+
+        st.dataframe(scores, hide_index=True)

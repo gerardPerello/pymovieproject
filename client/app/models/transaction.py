@@ -12,5 +12,3 @@ class Transaction:
         self.amount_stock = amount_stock
         self.amount_money = amount_money
         self.market = market
-
-
