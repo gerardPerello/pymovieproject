@@ -9,7 +9,7 @@ class Game:
     Returns:
         _type_: _description_
     """
-    url = "http://172.20.10.2:5000/models/game/"
+    url = "http://127.0.0.1:5000/models/game/"
 
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
                  turns_between_events, player_count, stock_count, open_):

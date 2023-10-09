@@ -29,8 +29,8 @@ class GameBrain:
         #data = game.to_dict()
         self.game = Game(1, name, total_turns, 1,  starting_money, turns_between_events, player_count, stock_count)
 
-        #Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
-        #self.game = controller.get_name(name)
+        Game.create(name, total_turns, 50, starting_money, turns_between_events, player_count, stock_count)
+        self.game = Game.get_by_id()
 
         # SEND TO SNOWFLAKE
 
