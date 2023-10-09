@@ -1,4 +1,4 @@
-from ...snowflake_connection import connect_snowflake  # Your actual connection setup might be different
+from client.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
 
 
 class Event:

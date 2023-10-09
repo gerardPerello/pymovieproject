@@ -1,4 +1,4 @@
-from ...snowflake_connection import connect_snowflake
+from client.app.snowflake_connection import connect_snowflake
 
 class PlayersToGame:
     def __init__(self, game_id, player_id, turn_id, amount_of_money):

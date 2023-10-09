@@ -1,5 +1,5 @@
 import unittest
-from .app.models import *
+from client.app.models import *
 
 
 class TestDatabaseMethods(unittest.TestCase):

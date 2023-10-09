@@ -1,6 +1,3 @@
-from ...snowflake_connection import connect_snowflake
-
-
 class Currency:
     def __init__(self, id, code, name, country, continent):
         self.id = id

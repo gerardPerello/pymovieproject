@@ -1,4 +1,4 @@
-from ...snowflake_connection import connect_snowflake
+from client.app.snowflake_connection import connect_snowflake
 
 
 class Game:

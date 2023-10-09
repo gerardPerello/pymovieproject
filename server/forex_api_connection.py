@@ -5,7 +5,7 @@ import os
 import json
 import pandas as pd
 import random
-from .app import controller
+from client.app import controller
 from credentials import credentials
 
 def get_currencies_names(n=-1):

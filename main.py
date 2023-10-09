@@ -1,12 +1,10 @@
 from time import sleep
 
-from scripts import forex_api_connection
+from server import forex_api_connection
 import datetime as dt
 import pandas as pd
 import streamlit as st
-from scripts.app import controller
-from scripts.app.logic import game_logic
-import os
+from client.app import controller
 
 
 def option1(url, date_from, date_to):
