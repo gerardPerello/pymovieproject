@@ -38,7 +38,7 @@ with st.expander("Game Setup ⚙️"):
 
         # turn time
         # minutesperturn = st.slider('How many minutes in each turn?', 0, 60, 5)
-        # secondsperturn = minutesperturn*60
+        secondsperturn = 0
 
         # amount of money
         startingmoney = st.slider('Starting money for each player', 100, 4000, 1000, step=100)
@@ -62,10 +62,11 @@ with st.expander("Game Setup ⚙️"):
 
     if st.session_state.submitted_game_setup:
         # CREATE A GAME BRAIN AND SEND IT TO SNOWFLAKE
+        
         st.session_state.game_brain.create_and_push_game(
             name = game_name, 
             total_turns = turncount, 
-            # sec_per_turn = secondsperturn, 
+            sec_per_turn = secondsperturn, 
             starting_money = startingmoney,
             turns_between_events = event_frequency, 
             player_count = playercount, 

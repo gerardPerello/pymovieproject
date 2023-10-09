@@ -6,9 +6,16 @@ class GameBrain:
     """This client-side class manages game states and game data throughout the game. 
 
     It stores data in a format compatible with the database and contains a variety of functions for updating data and managing game states. 
+    
+    Attributes:
+    - game: a "game" object that contains all game settings
+    - state: current game state (1: Before game setup)
+    - turn: current turn
+    - game: a "game" object that contains all game settings
     """
+    
     def __init__(self):
-        self.game = None    # Game is another object that contains all game settings and identifiers
+        self.game = None    # 
         self.state = 0      # current game state
         self.turn = 0       # current turn
         self.player = None  # current player
@@ -18,21 +25,13 @@ class GameBrain:
         self.stocks = {}  
         self.currencies = {} 
 
-    # def __init__(self):
-    #     pass
-
-    def create_and_push_game(self, name, total_turns, starting_money, turns_between_events, player_count, stock_count):
+    def create_and_push_game(self, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count):
 
         # CREATE A GAME OBJECT 
-        #self.game = Game(*data)
-        #Convert game to data
-        #data = game.to_dict()
-        self.game = Game(1, name, total_turns, 1,  starting_money, turns_between_events, player_count, stock_count)
-
-        #Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
-        #self.game = controller.get_name(name)
+        self.game = Game(1, name, total_turns, sec_per_turn,  starting_money, turns_between_events, player_count, stock_count)
 
         # SEND TO SNOWFLAKE
+        # self.game = controller.get_name(name)
 
     def get_open_games(self):
         # I want a dict: game : [players]
@@ -41,17 +40,9 @@ class GameBrain:
         pass
 
     def join_game(self, gameId, playerId):
-        # self.game = 
-        # self.player =
-
-        # self.players = {}   # all participating players
-        # # financial data
-        # self.stocks = {}  
-        # self.currencies = {} 
-
+        # self.game = Game.get_by_id(gameId)
+        # self.player = Player.get_by_id(gameId)
         self.state = 1 # WAITING FOR START
-        pass
-
 
     def setup_game(self):
         # GET CURRENCY DATA
@@ -76,23 +67,23 @@ class GameBrain:
         N = 20
         if self.turn < 20:
             self.turn += 1
-            self.game_state = 3 # BETWEEN TURNS
-            # self.compute_next_turn()
-            # To game end
+            self.game_state = 3 # BETWEEN TURNS            
+
+            # UPDATE STOCKS
+
+            # CLOSE TRADES 
+
+            self.game_state = 2
         elif self.turn == 20:
             self.end_game()
 
-    def compute_next_turn(self):
-        sleep(2)
-        self.game_state = 2
 
     def end_game(self):
         self.game_state = 4 # GAME END
 
-    def push_actual_player(self,data):
-        # message = controller.create_player(data)
+    def send_order(self):
         pass
 
-    def send_order(self):
+    def get_sell_orders(self):
         pass
 

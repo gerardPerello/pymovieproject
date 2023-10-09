@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 #Personalized
-server/app/credentials/credentials.py
+credentials/credentials.py
 .idea/
 
 # C extensions

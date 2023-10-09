@@ -127,7 +127,12 @@ if 'game_brain' in st.session_state:
             )
 
         st.markdown('---')
-        st.markdown('### Trades closed last turn')
+        st.markdown('### Your Portfolio')
+        portofolio_df = st.session_state.game_brain.get_portfolio()
+        st.dataframe(hide_index=True)
+
+        st.markdown('---')
+        st.markdown('### You closed trades last turn')
         # st.session_state.game_brain.get_sell_orders()
 
     
