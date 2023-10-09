@@ -6,7 +6,7 @@ from streamlit_extras.switch_page_button import switch_page
 st.set_page_config(
     page_title="Setup",
     page_icon="⚙️",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed" 
 )
 
@@ -15,11 +15,19 @@ MAXTURNS = 20
 MAXPLAYERS = 10
 MAXSTOCKS = 10
 
-st.write("# Game Setup 📈")
+# CREATE A GAME BRAIN
+if 'game_brain' not in st.session_state:
+    pass
+
+st.write("# Game Setup ⚙️")
+st.write('Select your desired game options and create your game.')
+st.write('The game parameters will be sent to Snowflake and a game will be created.')
+st.markdown('Once you"ve created the game, open the sidebar and navigate to the join page.')
 
 # GET GAME OPTIONS FROM USERS
 # - Game settings are stored as session state variables
 with st.form('form1'):
+
     game_name = st.text_input(
         label='Game Name',
         value='',
@@ -30,7 +38,6 @@ with st.form('form1'):
     st.session_state.turncount = st.slider('How many turns do you want to play?', 0, 10, MAXTURNS)
     st.session_state.minutesperturn = st.slider('How many minutes in each turn?', 0, 60, 5)
     st.session_state.secondsperturn = st.session_state.minutesperturn*60
-
     # amount of money
     st.session_state.startingmoney = st.slider('Starting money for each player', 100, 4000, 1000, step=100)
 
@@ -44,30 +51,31 @@ with st.form('form1'):
     st.session_state.playercount = st.slider('How many people are playing?', 0, MAXPLAYERS, 4)
 
     st.session_state.submitted_game_setup = st.form_submit_button("Submit")
+
     if st.session_state.submitted_game_setup :
         st.write('Game options submitted.')
         st.write(f'Your game will take {st.session_state.turncount} turns and {st.session_state.turncount*st.session_state.minutesperturn} minutes.')
 
 
 if st.session_state.submitted_game_setup:
-# SEND GAME SETUP TO SNOWFLAKE
-# - and get game id
-# 
+    # SEND TO SERVER/SNOWFLAKE
 
-# GET PLAYER IDS FROM SNOWFLAKE
 
-# ESTABLISH SETTINGS AS SESSION STATE VARIABLES
 
-# CALCULATE GET AND STORE CURRENCY DATA IN A PANDAS DATAFRAME
-# - which will need to persist
-    if 'curr_data' not in st.session_state:
+    # GET CURRENCY DATA
+    curr_1 = 20 * np.random.randn(st.session_state.turncount) + 400
+    curr_2 = 200 * np.random.randn(st.session_state.turncount) + 300
+    curr_3 = 40 * np.random.randn(st.session_state.turncount) + 300
+    curr_4 = 100 * np.random.randn(st.session_state.turncount) + 1000
+    curr_5 = 40 * np.random.randn(st.session_state.turncount) + 100
+    curr_data = pd.DataFrame(
+        {'USD': curr_1,
+        'JPY': curr_2,
+        'CAD': curr_3,
+        'GBP': curr_4,
+        'BTX': curr_5,
+        }
+    )
+    st.session_state.curr_data = curr_data
 
-        curr_1 = 20 * np.random.randn(st.session_state.turncount) + 400
-        curr_2 = 40 * np.random.randn(st.session_state.turncount) + 300
-        curr_data = pd.DataFrame(
-            {'USD': curr_1,
-            'JPY': curr_2,
-            }
-        )
-        st.session_state.curr_data = curr_data
 

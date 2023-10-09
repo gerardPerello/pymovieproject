@@ -23,7 +23,7 @@ st.markdown(
     """
     Welcome to Stock Market Mania! 🚀
 
-    Get set for an adrenaline-fueled ride through the Stock Market Mania! Strap in and unleash your inner tycoon as you navigate the thrilling world of trading. You're not just a player; you're a financial virtuoso, ready to conquer the market with your wit and strategy. Buy low, sell high, and watch your investments skyrocket. Will you bet on tech giants or daring startups? The choice is yours! Get ready for heart-pounding moments, epic wins, and maybe a few losses – it's all part of the game. So, grab your virtual wallet and let the trading frenzy begin! Good luck, and may your stocks always be bullish! 📈💰 #StockMarketMania
+    Get set for an adrenaline-fueled ride through the Stock Market! Strap in and unleash your inner tycoon as you navigate the thrilling world of trading. You're not just a player; you're a financial virtuoso, ready to conquer the market with your wit and strategy. Buy low, sell high, and watch your investments skyrocket. Will you bet on tech giants or daring startups? The choice is yours! Get ready for heart-pounding moments, epic wins, and maybe a few losses – it's all part of the game. So, grab your virtual wallet and let the trading frenzy begin! Good luck, and may your stocks always be bullish! 📈💰
     
     PyStocks is a project by Edoardo Draetta and Gerard Perelló.
 
@@ -46,7 +46,7 @@ if st.button("⚙️Press this button to set up a game⚙️"):
 
 # GO TO PLAYER SETUP
 if st.button("🐂Has a game already been set up? Join here🐂"):
-    switch_page("setup player")
+    switch_page("join")
 
 
-st.markdown('PyStocks is a project by Edoardo Draetta and Gerard Perelló.')
+st.markdown('**PyStocks is a project by Edoardo Draetta and Gerard Perelló.**')
