@@ -28,7 +28,16 @@ class GameBrain:
     def create_and_push_game(self, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count):
 
         # CREATE A GAME OBJECT 
+        #self.game = Game(*data)
+        #Convert game to data
+        #data = game.to_dict()
         self.game = Game(1, name, total_turns, sec_per_turn,  starting_money, turns_between_events, player_count, stock_count)
+        Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
+        
+        self.game = Game.get_by_id()
+
+        #Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
+        #self.game = controller.get_name(name)
 
         # SEND TO SNOWFLAKE
         # self.game = controller.get_name(name)

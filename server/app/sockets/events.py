@@ -1,6 +1,6 @@
 from flask_socketio import emit,join_room, leave_room
 from .. import socketio
-from ..logic import gameBrains
+#from ..logic import gameBrains
 
 @socketio.on('connect')
 def handle_connect():
