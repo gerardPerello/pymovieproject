@@ -1,7 +1,11 @@
 from client.app.snowflake_connection import connect_snowflake
-
+import requests
+import json
 
 class Game:
+
+    url = "http://172.20.10.2:5000/models/game/"
+
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
                  turns_between_events, player_count, stock_count):
         self.id = id
@@ -12,7 +16,6 @@ class Game:
         self.turns_between_events = turns_between_events
         self.player_count = player_count
         self.stock_count = stock_count
-
 
     def to_dict(self):
         return {
@@ -30,28 +33,31 @@ class Game:
     @classmethod
     def create(cls, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count):
 
+        new_url = cls.url + 'game'
+        data = cls(
+            0, name, total_turns, sec_per_turn, 
+            starting_money, turns_between_events, 
+            player_count, stock_count
+        )
 
-        connection = connect_snowflake()
-        cursor = connection.cursor()
+        dict = data.to_dict()
+
+        headers = {
+            'Content-Type':'application/json'
+        }
+
         try:
-            cursor.execute("""
-                INSERT INTO GAMES (
-                    g_name, g_total_turns, g_sec_per_turn, g_starting_money, 
-                    g_turns_between_events, g_player_count, g_stocks_count
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count))
-            connection.commit()
-            return {'message': 'Game created successfully'}
+            print(new_url)
+            print(json.dumps(dict))
+            response = requests.post(new_url, data=json.dumps(dict), headers=headers)
+            print({'message': 'Game created successfully'})
         except Exception as e:
-            return {'message': str(e)}
-        finally:
-            cursor.close()
-            connection.close()
+            print({'message': str(e)})
 
     @classmethod
     def get_all(cls):
-        connection = connect_snowflake()
-        cursor = connection.cursor()
+        url = ""
+
         try:
             cursor.execute("SELECT * FROM GAMES")
             results = cursor.fetchall()
@@ -67,6 +73,9 @@ class Game:
         finally:
             cursor.close()
             connection.close()
+
+    def get_by_id(cls, game_id):
+        pass
 
     @classmethod
     def get_by_name(cls, game_name):

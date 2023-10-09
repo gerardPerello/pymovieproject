@@ -9,11 +9,10 @@ st.set_page_config(
     page_title=np.random.choice(['Hi!', 'Hola!', 'Hoi!']),
     page_icon="👋",
     layout="centered",
-    initial_sidebar_state="collapsed" 
+    # initial_sidebar_state="collapsed" 
 )
 
 st.write("# Welcome to PyStocks! 📈")
-
 
 st.markdown("![Alt Text](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjVubmh5Nnd5c202NnNoM3pqMW9vNHg4eTYyOHBrcGhxYTVnazR4bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5Ty6JAjSVAiOWXClbw/giphy.gif)")
 
@@ -41,12 +40,6 @@ st.markdown(
 )
 
 if st.button("⚙️Press this button to set up a game⚙️"):
-    switch_page("setup game")
+    switch_page("setup and join")
 
-
-# GO TO PLAYER SETUP
-if st.button("🐂Has a game already been set up? Join here🐂"):
-    switch_page("join")
-
-
-st.markdown('**PyStocks is a project by Edoardo Draetta and Gerard Perelló.**')
+st.markdown('*PyStocks is a project by Edoardo Draetta and Gerard Perelló.*')
