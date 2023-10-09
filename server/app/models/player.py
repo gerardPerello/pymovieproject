@@ -1,4 +1,4 @@
-from ...snowflake_connection import connect_snowflake
+from server.app.snowflake_connection import connect_snowflake
 
 class Player:
     def __init__(self, id, name):

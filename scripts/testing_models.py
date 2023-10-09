@@ -50,7 +50,7 @@ class TestDatabaseMethods(unittest.TestCase):
     def test_create_players_to_game(self):
         test_data = {'game_id': 1, 'player_id': 1, 'turn_id': 1, 'amount_of_money': 1000}
         response = PlayersToGame.create(test_data)
-        self.assertEqual(response['message'], 'PlayersToGame entry created successfully')
+        self.assertEqual(response['message'], 'Player_To_Game created successfully')
 
     def test_get_players_to_game_by_id(self):
         players_to_game = PlayersToGame.get_by_id(game_id=1, player_id=1, turn_id=1)

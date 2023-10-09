@@ -1,30 +1,31 @@
-from ...snowflake_connection import connect_snowflake  # Your actual connection setup might be different
+from server.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
 
-class Event_to_Stock:
-    def __init__(self, event_id, stock_id, game_id):
-        self.event_id = event_id
+
+class ForexToStock:
+    def __init__(self, stock_id, currency_id, currency_weight):
         self.stock_id = stock_id
-        self.game_id = game_id
+        self.currency_id = currency_id
+        self.currency_weight = currency_weight
 
     @classmethod
     def create(cls, data):
 
-        required_fields = ['stock_id', 'event_id', 'game_id']
+        required_fields = ['stock_id', 'currency_id', 'currency_weight']
 
         if not all(field in data for field in required_fields):
-            return {'message': 'Required event_to_stock data is missing'}
+            return {'message': 'Required forex_to_sticks data is missing'}
 
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            query = """INSERT INTO events_to_stocks 
-                        (es_event_id, es_stock_id, es_game_id)
+            query = """INSERT INTO forex_to_stocks 
+                        (fs_stock_id, fs_currency_id, fs_currency_weight)
                        VALUES (%s, %s, %s)"""
             cursor.execute(query, (
-                data['event_id'], data['stock_id'], data['game_id']
+                data['stock_id'], data['currency_id'], data['currency_weight']
             ))
             connection.commit()
-            return {'message': 'Events to Stock created successfully'}
+            return {'message': 'Forex To Stocks created successfully'}
         except Exception as e:
             return {'message': str(e)}
         finally:
@@ -32,14 +33,44 @@ class Event_to_Stock:
             connection.close()
 
     @classmethod
-    def get_by_id(cls, event_id, stock_id):
+    def get_by_id(cls, stock_id, currency_id):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM events_to_stocks WHERE es_event_id = %s AND es_stock_id = %s",
-                           (event_id, stock_id))
+            cursor.execute("SELECT * FROM forex_to_stocks WHERE fs_stock_id = %s AND fs_currency_id = %s",
+                           (stock_id, currency_id))
             result = cursor.fetchone()
             return cls(*result) if result else None
+        except Exception as e:
+            return {'message': str(e)}
+        finally:
+            cursor.close()
+            connection.close()
+
+    @classmethod
+    def get_by_currency(cls, currency_id):
+        connection = connect_snowflake()
+        cursor = connection.cursor()
+        try:
+            cursor.execute("SELECT * FROM forex_to_stocks WHERE fs_currency_id = %s",
+                           (currency_id,))
+            results = cursor.fetchall()
+            return [cls(*result) for result in results]
+        except Exception as e:
+            return {'message': str(e)}
+        finally:
+            cursor.close()
+            connection.close()
+
+    @classmethod
+    def get_by_stock(cls, stock_id):
+        connection = connect_snowflake()
+        cursor = connection.cursor()
+        try:
+            cursor.execute("SELECT * FROM forex_to_stocks WHERE fs_stock_id = %s",
+                           (stock_id,))
+            results = cursor.fetchall()
+            return [cls(*result) for result in results]
         except Exception as e:
             return {'message': str(e)}
         finally:
@@ -51,7 +82,7 @@ class Event_to_Stock:
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM events_to_stocks")
+            cursor.execute("SELECT * FROM forex_to_stocks")
             results = cursor.fetchall()
             return [cls(*result) for result in results]
         except Exception as e:
@@ -61,29 +92,15 @@ class Event_to_Stock:
             connection.close()
 
     @classmethod
-    def get_all_by_game(cls, game_id):
+    def update(cls, stock_id, currency_id, data):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM events_to_stocks WHERE es_game_id = %s", (game_id,))
-            results = cursor.fetchall()
-            return [cls(*result) for result in results]
-        except Exception as e:
-            return {'message': str(e)}
-        finally:
-            cursor.close()
-            connection.close()
-
-    @classmethod
-    def update(cls, event_id, stock_id, data):
-        connection = connect_snowflake()
-        cursor = connection.cursor()
-        try:
-            query = """UPDATE events_to_stocks SET 
-                        es_game_id = %s
-                       WHERE es_event_id = %s AND es_stock_id = %s"""
+            query = """UPDATE forex_to_stocks SET 
+                        fs_currency_weight = %s
+                       WHERE fs_stock_id = %s AND fs_currency_id = %s"""
             cursor.execute(query, (
-                data['game_id'], event_id, stock_id
+                data['currency_weight'], stock_id, currency_id
             ))
             connection.commit()
         except Exception as e:
@@ -93,12 +110,12 @@ class Event_to_Stock:
             connection.close()
 
     @classmethod
-    def delete(cls, event_id, stock_id):
+    def delete(cls, stock_id, currency_id):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("DELETE FROM events_to_stocks WHERE es_event_id = %s AND es_stock_id = %s",
-                           (event_id, stock_id))
+            cursor.execute("DELETE FROM forex_to_stocks WHERE fs_stock_id = %s AND fs_currency_id = %s",
+                           (stock_id, currency_id))
             connection.commit()
         except Exception as e:
             return {'message': str(e)}

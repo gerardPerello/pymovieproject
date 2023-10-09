@@ -1,4 +1,4 @@
-from ...snowflake_connection import connect_snowflake  # Your actual connection setup might be different
+from server.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
 
 class Transaction:
     def __init__(self, transaction_id, player_id, game_id, turn_id, stock_id, type_, amount_stock, amount_money,

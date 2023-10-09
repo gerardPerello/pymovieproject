@@ -9,6 +9,12 @@ class ForexToStock:
 
     @classmethod
     def create(cls, data):
+
+        required_fields = ['stock_id', 'currency_id', 'currency_weight']
+
+        if not all(field in data for field in required_fields):
+            return {'message': 'Required forex_to_sticks data is missing'}
+
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
