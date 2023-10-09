@@ -3,7 +3,7 @@ from server.app.snowflake_connection import connect_snowflake
 
 class Game:
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
-                 turns_between_events, player_count, stock_count):
+                 turns_between_events, player_count, stock_count, open_):
         self.id = id
         self.name = name
         self.total_turns = total_turns
@@ -12,6 +12,7 @@ class Game:
         self.turns_between_events = turns_between_events
         self.player_count = player_count
         self.stock_count = stock_count
+        self.open_ = open_
 
 
     def to_dict(self):
