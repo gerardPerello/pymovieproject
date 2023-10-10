@@ -86,7 +86,7 @@ if 'game_brain' in st.session_state:
         st.markdown("Select an available game, then select a player id")
 
         # GET GAME IDs / NAMES
-        if st.button("ReqAgain"):
+        if st.button("Request Open Games"):
             st.session_state.game_brain.get_open_games()
         if not st.session_state.game_brain.open_games_req:
             st.session_state.game_brain.get_open_games()
@@ -96,7 +96,7 @@ if 'game_brain' in st.session_state:
             'Which active game do you want to join?',
             st.session_state.game_brain.open_games.keys()
         )
-        st.write('You will join Game_', game_id)
+        st.write('You will join Game ', game_id)
 
         if game_id: # Game is selected
 
@@ -106,10 +106,10 @@ if 'game_brain' in st.session_state:
                 st.session_state.game_brain.open_games[game_id]
             )
 
-            st.write('You are the Player_', player_id)
+            st.write('You are the Player ', player_id)
 
             # Confirm choice and send to server
-            if st.button(f"Join to Game_{game_id} as {player_id}"):
+            if st.button(f"Join Game {game_id} as {player_id}"):
                 st.session_state.game_brain.join_game(game_id, player_id)
                 st.session_state.game_brain.state = 1
                 switch_page("play")

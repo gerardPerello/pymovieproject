@@ -16,42 +16,45 @@ st.set_page_config(
 sns.set_style("whitegrid")
 sns.set_context("paper")
 
-# Game states are 
-#   0: BEFORE SETUP
-#   1: AWAITING SETUP
-#   2: DURING TURN
-#   3: BETWEEN TURNS
-#   4: GAME END
-
+# Page header
 st.header("PyStockMarket")
 
-# GAME NOT JOINED
+# If the game has not been joined, print a message.
 if 'game_brain' not in st.session_state:
     st.write("A game has not been joined.")
 
-# HAS VISITED SETUP PAGE 
+# If the user has visited the setup page... 
 if 'game_brain' in st.session_state:
 
+    # ... display a message.
     st.write(f'You are Player {st.session_state.game_brain.player_id} in Game {st.session_state.game_brain.game_id}')
 
-    # WAITING FOR GAME START
+    # If game setup needs to be completed
     if st.session_state.game_brain.state == 1: 
         st.markdown("Please wait until game setup is completed")
 
         st.button(
             'Click here to begin the game')
         
-    # DURING TURN, BETWEEN TURN, GAME END
+    # If we're not in game setup, we can display a plot of stocks
     if st.session_state.game_brain.state not in [0, 1]:
+
+        # Provide data to client if game has been started successfully
         if not st.session_state.game_brain.game_started:
             st.session_state.game_brain.setup_game()
 
+        # Displasy current turn
         st.write('It is turn', st.session_state.game_brain.turn)
-        st.write("The game state is", st.session_state.game_brain.state)
+
+        # This button refreshes the page bc streamlit refreshes whenever a widget is used
         st.button("Refresh Button")
-        # DATA
+
+
+        # Get data from server and plot current turn
         df = pd.DataFrame(st.session_state.game_brain.currencies)
-        st.dataframe(df[0:st.session_state.game_brain.turn+1])
+
+        # for debugging
+        # st.dataframe(df[0:st.session_state.game_brain.turn+1])
 
         # PLOT 
         fig, ax = plt.subplots(figsize=(8,3))
@@ -69,21 +72,31 @@ if 'game_brain' in st.session_state:
         plt.xlim(0, 20)
         ax.set_ylim(bottom=0)
 
+        # Plot legend
         sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+
+        # Display on page
         st.pyplot(fig, use_container_width=True)
 
     # DURING TURN
     if st.session_state.game_brain.state == 2:
+
+        # Display current balance
         balance = 5000
         st.write(f"Your current balance is {balance:.2f} dollars")
+
         col1, col2 = st.columns(2)
 
         with col1:
             st.markdown('### Make an order (placeholder)')
+
+            # Make an order with selectboxes and sliders
+
             buy_or_sell = st.selectbox('Would you like to buy or sell?', ('Buy', 'Sell'))
             chosen_stock = st.selectbox('Which stock would you like to buy?', df.columns)
             stock_quantity = st.slider('Amount of stock', 0, 300, 25)
 
+            # Check if the player can afford to make this order
             total = stock_quantity * 100
             if buy_or_sell == 'Buy':
                 st.write(f"This order will cost you {total} to buy {chosen_stock}")
@@ -144,3 +157,15 @@ if 'game_brain' in st.session_state:
         scores = st.session_state.game_brain.get_final_scores()
 
         st.dataframe(scores, hide_index=True)
+
+
+with st.expander("See Documentation"):
+    st.write(''' 
+This page uses the GameBrain class to run the game. Currently, it simply calculates and redisplays stocks every turn.
+             
+Game states are 
+   0: BEFORE SETUP
+   1: AWAITING SETUP
+   2: DURING TURN
+'''
+)
