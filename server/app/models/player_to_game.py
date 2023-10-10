@@ -8,21 +8,19 @@ class PlayersToGame:
         self.amount_of_money = amount_of_money
 
     @classmethod
-    def create(cls, data):
-
-        required_fields = ['game_id', 'player_id', 'turn_id', 'amount_of_money']
-
-        if not all(field in data for field in required_fields):
-            return {'message': 'Required game data is missing'}
+    def create(cls, game_id, player_id, turn_id, amount_of_money):
 
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
             cursor.execute(
-                "INSERT INTO PLAYERS_TO_GAME (ptg_player_id,ptg_game_id, ptg_turn_id, ptg_money_amount) VALUES (%s, %s, %s, %s)",
-                (data['player_id'], data['game_id'], data['turn_id'], data['amount_of_money'])
+                "INSERT INTO PLAYERS_TO_GAME (ptg_player_id,ptg_game_id, ptg_turn_id, ptg_money_amount) VALUES (%s, "
+                "%s, %s, %s)",
+                (player_id, game_id, turn_id, amount_of_money)
             )
+
             connection.commit()
+            
             return {'message': 'Player_To_Game created successfully'}
         except Exception as e:
             return{"message": str(e)}

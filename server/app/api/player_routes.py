@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..snowflake_connection import connect_snowflake
+
 player_blueprint = Blueprint('player', __name__)
 
 
@@ -14,12 +15,13 @@ def create():
     connection = connect_snowflake()
     cursor = connection.cursor()
     try:
-        cursor.execute("""
+        result = cursor.execute("""
             INSERT INTO PLAYERS (
                 pl_name
             ) VALUES (%s)
         """, (data['name']))
         connection.commit()
+        print(result)
         return jsonify({'message': 'Player created successfully'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -36,6 +38,27 @@ def get_all():
         cursor.execute("SELECT * FROM PLAYERS")
         players = cursor.fetchall()
         return jsonify({'players': players}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
+@player_blueprint.route('/players/open', methods=['GET'])
+def get_all_players_in_open_games():
+    connection = connect_snowflake()
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "SELECT PL_ID,PL_NAME,G_ID FROM PLAYERS JOIN PLAYERS_TO_GAME ON pl_id = ptg_player_id "
+            "JOIN GAMES ON g_id = ptg_game_id WHERE g_is_open = TRUE",
+        )
+        relations = cursor.fetchall()
+        if relations is None:
+            return jsonify({'error': 'Players not found'}), 404
+
+        return jsonify({'players': relations}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:

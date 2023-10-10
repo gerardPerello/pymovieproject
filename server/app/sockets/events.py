@@ -1,6 +1,7 @@
 from flask_socketio import emit,join_room, leave_room
 from .. import socketio
-from ..logic import gameBrains
+from ..logic import *
+from ..models import Game
 
 @socketio.on('connect')
 def handle_connect():
@@ -18,15 +19,19 @@ def handle_disconnect():
 def handle_join_game(data):
     player_id = data.get('player_id')
     game_id = data.get('game_id')
-
+    print(data)
     # Join the player to a room specific to the game.
     join_room(game_id)
-
+    if game_id not in gameBrains:
+        print("Creating new game!!")
+        game = Game.get_by_id(game_id)
+        create_game(game_id, game, handle_next_turn(game_id))
     game_logic = gameBrains.get(game_id)
+    print(game_logic)
     if game_logic:
         game_logic.add_connected_player(player_id)
 
-    emit('player_joined', {'player_id': player_id}, room=game_id)
+
 
 @socketio.on('leave_game')
 def handle_leave_game(data):
@@ -48,17 +53,20 @@ def handle_leave_game(data):
 def handle_player_ready(data):
     game_id = data.get('game_id')
     player_id = data.get('player_id')
+    print(data)
+    print(gameBrains)
     # You might retrieve the relevant GameLogic instance from a dictionary using game_id
-    game_logic = gameBrains[game_id]
+    game_logic = gameBrains.get(game_id)
     game_logic.set_player_ready(player_id)
+    print(data)
 
-    if game_logic.all_players_ready():
+    if game_logic.all_players_ready_to_change_turn():
         handle_next_turn(game_id)
 
 
 def handle_next_turn(game_id):
-    game_logic = gameBrains[game_id]
-    game_logic.end_of_turn_logic()
-
+    #game_logic = gameBrains[game_id]
+    #game_logic.end_of_turn_logic()
+    print("Emmiting new Turn")
     # Notify clients of new turn state
-    emit('new_turn', game_logic.get_turn_data(), room=game_id)
+    emit('new_turn', room=game_id)

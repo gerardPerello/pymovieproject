@@ -19,34 +19,27 @@ def get_all():
         cursor.close()
         connection.close()
 
-
-@currency_blueprint.route('/currency', methods=['POST'])
-def create():
-    data = request.get_json()
-    required_fields = ['code', 'name', 'country', 'continent']
-
-    if not all(field in data for field in required_fields):
-        return {'error': 'Required currency data is missing'}
-
+@currency_blueprint.route('/values/<int:game_id>/<int:turn_id>', methods=['GET'])
+def get_all_players_in_open_games(game_id, turn_id):
     connection = connect_snowflake()
     cursor = connection.cursor()
-
     try:
-        query = "INSERT INTO CURRENCIES (C_CODE, C_NAME, C_COUNTRY, C_CONTINENT) VALUES %s" % ', '.join(
-            ['(%s, %s, %s, %s)'])
+        cursor.execute(
+            "select s_id, s_name, sm_turn_id, sm_game_id, sm_stock_value from stock_market "
+            "join stocks on sm_stock_id = s_id "
+            "where sm_turn_id = %s and sm_game_id = %s",(turn_id, game_id,)
+        )
+        relations = cursor.fetchall()
+        if relations is None:
+            return jsonify({'error': 'Values for Stocks not found'}), 404
 
-        params = []
-        params.extend([data['code'], data['name'], data['country'], data['continent']])
-
-        cursor.execute(query, params)
-        connection.commit()
-
-        return jsonify({'message': 'Currency created successfully'}), 201
+        return jsonify({'values': relations}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:
         cursor.close()
         connection.close()
+
 
 
 # GET a single currency by ID

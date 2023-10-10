@@ -5,9 +5,10 @@ from .game_logic import GameBrain
 # You might manage games by ID or some other identifier.
 gameBrains = {}
 
-def create_game(gameBrain_id):
+def create_game(gameBrain_id, game, callback):
     # Initialize a new game with its initial state and store it in games dict.
-    gameBrains[gameBrain_id] = GameBrain(initial_state="pre_game")
+    print(gameBrain_id)
+    gameBrains[gameBrain_id] = GameBrain(game, callback)
 
 def get_gameBrain(gameBrain_id):
     # Retrieve the game instance by its ID.

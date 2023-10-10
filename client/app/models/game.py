@@ -2,12 +2,13 @@ from client.app.snowflake_connection import connect_snowflake
 import requests
 import json
 
+
 class Game:
 
-    url = "http://172.20.10.2:5000/models/game/"
+    url = "http://127.0.0.1:5000/models/game/"
 
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
-                 turns_between_events, player_count, stock_count):
+                 turns_between_events, player_count, stock_count, open_):
         self.id = id
         self.name = name
         self.total_turns = total_turns
@@ -16,6 +17,7 @@ class Game:
         self.turns_between_events = turns_between_events
         self.player_count = player_count
         self.stock_count = stock_count
+        self.open_ = open_
 
     def to_dict(self):
         return {
@@ -27,117 +29,58 @@ class Game:
             'turns_between_events': self.turns_between_events,
             'player_count': self.player_count,
             'stock_count': self.stock_count,
+            'open': self.open_
 
         }
 
     @classmethod
-    def create(cls, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count):
+    def create(cls, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_):
 
+        # PACKAGE AND SEND TO SERVER
         new_url = cls.url + 'game'
         data = cls(
-            0, name, total_turns, sec_per_turn, 
-            starting_money, turns_between_events, 
-            player_count, stock_count
+            0, name, total_turns, sec_per_turn,
+            starting_money, turns_between_events,
+            player_count, stock_count, open_
         )
 
         dict = data.to_dict()
 
         headers = {
-            'Content-Type':'application/json'
+            'Content-Type': 'application/json'
         }
 
         try:
-            print(new_url)
-            print(json.dumps(dict))
             response = requests.post(new_url, data=json.dumps(dict), headers=headers)
-            print({'message': 'Game created successfully'})
+            return response
         except Exception as e:
-            print({'message': str(e)})
+            return {'message': str(e)}
 
     @classmethod
     def get_all(cls):
-        url = ""
+        new_url = cls.url + 'games'
 
         try:
-            cursor.execute("SELECT * FROM GAMES")
-            results = cursor.fetchall()
-            games = []
-            for result in results:
-                id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count = result
-                game = cls(id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count,
-                           stock_count)
-                games.append(game)
-            return games
+            response = requests.get(new_url)
+            return response.json()
         except Exception as e:
-            return {'error': str(e)}
-        finally:
-            cursor.close()
-            connection.close()
+            return {'message': str(e)}
 
     def get_by_id(cls, game_id):
-        pass
+        new_url = cls.url + 'game'
 
-    @classmethod
-    def get_by_name(cls, game_name):
-        connection = connect_snowflake()
-        cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM GAMES WHERE g_name = %s", (game_name,))
-            result = cursor.fetchone()
-            if result:
-                id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count = result
-                return cls(id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count,
-                           stock_count)
-            else:
-                return None
+            response = requests.get(new_url)
+            return response.json()
         except Exception as e:
             return {'message': str(e)}
-        finally:
-            cursor.close()
-            connection.close()
 
     @classmethod
-    def delete(cls, game_id):
-        connection = connect_snowflake()
-        cursor = connection.cursor()
+    def get_all_open(cls):
+        new_url = cls.url + 'games/open'
         try:
-            cursor.execute("DELETE FROM GAMES WHERE g_id = %s", (game_id,))
-            connection.commit()
-            if cursor.rowcount > 0:
-                return {'message': 'Game deleted successfully'}
-            else:
-                return {'message': 'Game not found'}
+            response = requests.get(new_url)
+            return response.json()
         except Exception as e:
             return {'message': str(e)}
-        finally:
-            cursor.close()
-            connection.close()
 
-    @classmethod
-    def update(cls, game_id, new_data):
-        connection = connect_snowflake()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("""
-                UPDATE GAMES SET 
-                    g_name = %s,
-                    g_total_turns = %s,
-                    g_sec_per_turn = %s,
-                    g_starting_money = %s,
-                    g_turns_between_events = %s,
-                    g_player_count = %s,
-                    g_stocks_count = %s
-                WHERE g_id = %s
-            """, (new_data['name'], new_data['total_turns'], new_data['sec_per_turn'],
-                  new_data['starting_money'], new_data['turns_between_events'],
-                  new_data['player_count'], new_data['stock_count'], game_id))
-            connection.commit()
-            if cursor.rowcount > 0:
-                return {'message': 'Game updated successfully'}
-            else:
-                return {'message': 'Game not found'}
-        except Exception as e:
-            return {'message': str(e)}
-        finally:
-            cursor.close()
-            connection.close()

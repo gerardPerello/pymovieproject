@@ -49,7 +49,6 @@ def get_by_id(game_id, player_id, turn_id):
         cursor.close()
         connection.close()
 
-
 @player_to_game_blueprint.route('/player_to_game_relation/<int:game_id>&<int:turn_id>', methods=['GET'])
 def get_all_by_player_in_game(cls, game_id, turn_id):
     connection = connect_snowflake()

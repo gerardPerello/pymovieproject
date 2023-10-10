@@ -6,12 +6,7 @@ class Player:
         self.name = name
 
     @classmethod
-    def create(cls, data):
-        required_fields = ['name']
-
-        if not all(field in data for field in required_fields):
-            return {'message': 'Required player data is missing'}
-
+    def create(cls, name):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
@@ -19,8 +14,9 @@ class Player:
                 INSERT INTO PLAYERS (
                     pl_name
                 ) VALUES (%s)
-            """, (data['name']))
+            """, (name))
             connection.commit()
+
             return {'message': 'Player created successfully'}
         except Exception as e:
             return {'message': str(e)}
