@@ -2,7 +2,7 @@ from client.app.models import *
 import numpy as np
 from time import sleep
 import socketio
-
+from ..app.models.CONSTANTS import *
 
 class GameBrain:
     """A class that manages the client-side game logic, state, and socket events.
@@ -105,7 +105,7 @@ class GameBrain:
 
         # If not connected, connect to the server
         if not self.sio.connected:
-            self.sio.connect('http://localhost:5000')
+            self.sio.connect(f'http://{ip}:5000')
         # Emit the join_game event after connecting
         print("Connecting to the server!!")
         self.sio.emit('join_game', {'player_id': playerId, 'game_id': gameId})
