@@ -37,7 +37,7 @@ class Game:
     def create(cls, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_):
 
         # PACKAGE AND SEND TO SERVER
-        new_url = cls.url + 'games'
+        new_url = cls.url + 'game'
         data = cls(
             0, name, total_turns, sec_per_turn,
             starting_money, turns_between_events,
@@ -51,34 +51,36 @@ class Game:
         }
 
         try:
-            print(new_url)
-            print(json.dumps(dict))
             response = requests.post(new_url, data=json.dumps(dict), headers=headers)
-            print({'message': 'Game created successfully'})
+            return response
         except Exception as e:
-            print({'message': str(e)})
+            return {'message': str(e)}
 
     @classmethod
     def get_all(cls):
-        new_url = cls.url + 'game'
+        new_url = cls.url + 'games'
 
         try:
-            print(new_url)
-            print(json.dumps(dict))
             response = requests.get(new_url)
             return response.json()
         except Exception as e:
-            print({'message': str(e)})
+            return {'message': str(e)}
 
     def get_by_id(cls, game_id):
         new_url = cls.url + 'game'
 
         try:
-            print(new_url)
-            print(json.dumps(dict))
             response = requests.get(new_url)
             return response.json()
         except Exception as e:
-            print({'message': str(e)})
+            return {'message': str(e)}
 
+    @classmethod
+    def get_all_open(cls):
+        new_url = cls.url + 'games/open'
+        try:
+            response = requests.get(new_url)
+            return response.json()
+        except Exception as e:
+            return {'message': str(e)}
 

@@ -1,11 +1,9 @@
 import streamlit as st 
 import numpy as np
 import pandas as pd
-from streamlit_extras.no_default_selectbox import selectbox
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-from client.game_brain import GameBrain
 
 st.set_page_config(
     page_title="Good luck!",
@@ -34,15 +32,15 @@ if 'game_brain' not in st.session_state:
 # HAS VISITED SETUP PAGE 
 if 'game_brain' in st.session_state:
 
-    st.write(f'You are player {st.session_state.game_brain.player} in game {st.session_state.game_brain.game}')
+    st.write(f'You are Player {st.session_state.game_brain.player_id} in Game {st.session_state.game_brain.game_id}')
 
     # WAITING FOR GAME START
     if st.session_state.game_brain.state == 1: 
         st.markdown("Please wait until game setup is completed")
         st.session_state.game_brain.setup_game()
         st.button(
-            'Click here to begin the game', 
-            on_click=st.session_state.game_brain.begin_game
+            'Click here to begin the game'#,
+            #on_click=st.session_state.game_brain.begin_game
             )
 
 

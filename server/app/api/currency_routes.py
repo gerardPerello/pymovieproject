@@ -20,6 +20,9 @@ def get_all():
         connection.close()
 
 
+
+
+
 # GET a single currency by ID
 @currency_blueprint.route('/currency/<int:currency_id>', methods=['GET'])
 def get_by_id(currency_id):
