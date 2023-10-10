@@ -11,21 +11,29 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# INITIALIZE AN EMPTY GAME BRAIN
+''' 
+    The functioning of the app depends heavily on the GameBrain class. 
+    
+    An instance of this class is stored in session_state and used throughout to update turns and things of that nature.
 
+    This page allows players to create a game and/or join an existing one. Either way, they leave the page with a GameBrain.
+'''
+
+# Initialize an empty game brain
 if 'game_brain' not in st.session_state:
-    print("CREATING AN EMPTY GAME BRAIN!")
+    # print("CREATING AN EMPTY GAME BRAIN!")
     st.session_state.game_brain = GameBrain()
 
-# SETUP PARAMETERS
+# Game setup constants
 MAXTURNS = 20
 MAXPLAYERS = 10
 MAXSTOCKS = 10
 
+# Game brain has been created
 if 'game_brain' in st.session_state:
 
-
     st.markdown("## Use this page to set up and join a game")
+
     # GET GAME OPTIONS AND CREATE A GAME
     with st.expander("Game Setup ⚙️"):
 
@@ -76,7 +84,7 @@ if 'game_brain' in st.session_state:
                 stock_count = stockcount
             )
 
-            # SUCCESS MESSAGE?
+            # SUCCESS MESSAGE
             st.write("Game successfully created.")
 
 
@@ -84,24 +92,9 @@ if 'game_brain' in st.session_state:
     with st.expander("Select Game and Player 🏋️"):
         st.markdown("Select an available game, then select a player id")
 
-        #########Gerard: WHAT???
-        """if 'game_brain' not in st.session_state: # i.e. you havent just created the game
-            st.write("Made a game brain.")
-            st.session_state.game_brain.create_and_push_game(
-                name = game_name,
-                total_turns = turncount,
-                # sec_per_turn = secondsperturn,
-                starting_money = startingmoney,
-                turns_between_events = event_frequency,
-                player_count = playercount,
-                stock_count = stockcount
-            )"""
-
         # GET GAME IDs / NAMES
-
         if not st.session_state.game_brain.open_games_req:
             open_games = st.session_state.game_brain.get_open_games()
-        #counter = count(1) ################G: WHAT?
 
         # Choose a game
         game_id = selectbox(

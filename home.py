@@ -1,8 +1,5 @@
 import streamlit as st
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(
@@ -12,7 +9,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
+'''
+    This page serves as the landing page of the website. You can run it using  python -m streamlit run .\home.py 
 
+    Navigate to the other pages in pages/ using the switch page button or the sidebar. 
+
+'''
 st.write("# Welcome to PyStocks! 📈")
 
 st.markdown(
@@ -45,5 +47,8 @@ st.markdown(
 if st.button("⚙️Set up and join a game⚙️"):
     switch_page("setup and join")
 
+# Gif
 st.markdown("![Alt Text](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjVubmh5Nnd5c202NnNoM3pqMW9vNHg4eTYyOHBrcGhxYTVnazR4bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5Ty6JAjSVAiOWXClbw/giphy.gif)")
+
+# Signature
 st.markdown('*PyStocks is a project by Edoardo Draetta and Gerard Perelló.*')
