@@ -19,7 +19,11 @@ st.markdown(
 
     🚀 Get set for an adrenaline-fueled ride through the Stock Market! Strap in and unleash your inner tycoon as you navigate the thrilling world of trading. 
     
-    You're not just a player; you're a financial virtuoso, ready to conquer the market with your wit and strategy. Buy low, sell high, and watch your investments skyrocket. Will you bet on tech giants or daring startups? The choice is yours! Get ready for heart-pounding moments, epic wins, and maybe a few losses – it's all part of the game. 
+    You're not just a player; you're a financial virtuoso, ready to conquer the market with your wit and strategy. 
+    
+    Buy low, sell high, and watch your investments skyrocket. 
+    
+    Get ready for heart-pounding moments, epic wins, and maybe a few losses – it's all part of the game. 
     
     So, grab your virtual wallet and let the trading frenzy begin! Good luck, and may your stocks always be bullish! 📈💰
     
