@@ -1,8 +1,9 @@
 import requests
 import json
+from .CONSTANTS import *
 class Currency:
 
-    url = "http://127.0.0.1:5000/models/currency/"
+    url = f"http://{ip}:{port}/models/currency/"
     def __init__(self, id, code, name, country, continent):
         self.id = id
         self.code = code

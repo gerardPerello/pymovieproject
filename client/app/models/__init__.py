@@ -9,3 +9,4 @@ from .portfolio import Portfolio
 from .player_to_game import PlayersToGame
 from .stock import Stock
 from .forex_to_stocks import ForexToStock
+

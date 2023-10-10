@@ -1,12 +1,13 @@
 import requests
 import json
+from .CONSTANTS import *
+
 class StockMarket:
     """DOCSTRING NEEDED"""
-    
-    url = "http://127.0.0.1:5000/models/currency/"
 
+    url = f"http://{ip}:{port}/models/currency/"
 
-    def __init__(self, stock_id, game_id, turn_id,stock_name, stock_value):
+    def __init__(self, stock_id, game_id, turn_id, stock_name, stock_value):
         self.stock_id = stock_id
         self.stock_name = stock_name
         self.game_id = game_id

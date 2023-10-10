@@ -1,11 +1,11 @@
 import requests
 import json
-
+from .CONSTANTS import *
 
 class Game:
     """DOCSTRING NEEDED"""
 
-    url = "http://127.0.0.1:5000/models/game/"
+    url = f"http://{ip}:{port}/models/game/"
 
     def __init__(self, id, name, total_turns, sec_per_turn, starting_money,
                  turns_between_events, player_count, stock_count, open_):

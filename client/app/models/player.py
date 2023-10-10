@@ -1,8 +1,9 @@
 import json
 import requests
+from .CONSTANTS import *
 class Player:
     """DOCSTRING NEEDED"""
-    url = "http://127.0.0.1:5000/models/player/"
+    url = f"http://{ip}:{port}/models/player/"
     def __init__(self, id, name):
         self.id = id
         self.name = name
