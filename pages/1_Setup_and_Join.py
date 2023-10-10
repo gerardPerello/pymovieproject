@@ -11,13 +11,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-''' 
-    The functioning of the app depends heavily on the GameBrain class. 
-    
-    An instance of this class is stored in session_state and used throughout to update turns and things of that nature.
-
-    This page allows players to create a game and/or join an existing one. Either way, they leave the page with a GameBrain.
-'''
 
 # Initialize an empty game brain
 if 'game_brain' not in st.session_state:
@@ -120,3 +113,12 @@ if 'game_brain' in st.session_state:
                 st.session_state.game_brain.join_game(game_id, player_id)
                 st.session_state.game_brain.state = 1
                 switch_page("play")
+
+
+with st.expander("See Documentation"):
+    st.write(''' 
+    The functioning of the app depends heavily on the GameBrain class. 
+    An instance of this class is stored in session_state and used throughout to update turns and things of that nature.
+    This page allows players to create a game and/or join an existing one. Either way, they leave the page with a GameBrain.
+'''
+)

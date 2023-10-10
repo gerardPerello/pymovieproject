@@ -9,12 +9,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-'''
-    This page serves as the landing page of the website. You can run it using  python -m streamlit run .\home.py 
 
-    Navigate to the other pages in pages/ using the switch page button or the sidebar. 
-
-'''
 st.write("# Welcome to PyStocks! 📈")
 
 st.markdown(
@@ -52,3 +47,10 @@ st.markdown("![Alt Text](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjVub
 
 # Signature
 st.markdown('*PyStocks is a project by Edoardo Draetta and Gerard Perelló.*')
+
+
+with st.expander("See Documentation"):
+    st.write('''
+    This page serves as the landing page of the website. You can run it using  python -m streamlit run .\home.py 
+    Navigate to the other pages in pages/ using the switch page button or the sidebar. 
+''')
