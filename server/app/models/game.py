@@ -54,13 +54,13 @@ class Game:
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM GAMES")
+            cursor.execute("SELECT * FROM GAMES WHERE g_is_open = True")
             results = cursor.fetchall()
             games = []
             for result in results:
-                id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count = result
+                id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_ = result
                 game = cls(id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count,
-                           stock_count)
+                           stock_count, open_)
                 games.append(game)
             return games
         except Exception as e:
@@ -70,16 +70,16 @@ class Game:
             connection.close()
 
     @classmethod
-    def get_by_name(cls, game_name):
+    def get_by_id(cls, game_name):
         connection = connect_snowflake()
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT * FROM GAMES WHERE g_name = %s", (game_name,))
+            cursor.execute("SELECT * FROM GAMES WHERE g_id = %s", (game_name,))
             result = cursor.fetchone()
             if result:
-                id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count = result
+                id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_ = result
                 return cls(id, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count,
-                           stock_count)
+                           stock_count, open_)
             else:
                 return None
         except Exception as e:

@@ -19,6 +19,28 @@ def get_all():
         cursor.close()
         connection.close()
 
+@currency_blueprint.route('/values/<int:game_id>/<int:turn_id>', methods=['GET'])
+def get_all_players_in_open_games(game_id, turn_id):
+    connection = connect_snowflake()
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "select s_id, s_name, sm_turn_id, sm_game_id, sm_stock_value from stock_market "
+            "join stocks on sm_stock_id = s_id "
+            "where sm_turn_id = %s and sm_game_id = %s",(turn_id, game_id,)
+        )
+        relations = cursor.fetchall()
+        if relations is None:
+            return jsonify({'error': 'Values for Stocks not found'}), 404
+
+        return jsonify({'values': relations}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
 
 # GET a single currency by ID
 @currency_blueprint.route('/currency/<int:currency_id>', methods=['GET'])

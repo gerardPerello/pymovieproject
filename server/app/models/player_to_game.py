@@ -14,10 +14,13 @@ class PlayersToGame:
         cursor = connection.cursor()
         try:
             cursor.execute(
-                "INSERT INTO PLAYERS_TO_GAME (ptg_player_id,ptg_game_id, ptg_turn_id, ptg_money_amount) VALUES (%s, %s, %s, %s)",
+                "INSERT INTO PLAYERS_TO_GAME (ptg_player_id,ptg_game_id, ptg_turn_id, ptg_money_amount) VALUES (%s, "
+                "%s, %s, %s)",
                 (player_id, game_id, turn_id, amount_of_money)
             )
+
             connection.commit()
+            
             return {'message': 'Player_To_Game created successfully'}
         except Exception as e:
             return{"message": str(e)}

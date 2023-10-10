@@ -13,4 +13,7 @@ def create_app():
     app.register_blueprint(api_blueprint, url_prefix='/models')
 
     socketio.init_app(app, cors_allowed_origins="*")
+
     return app
+
+
