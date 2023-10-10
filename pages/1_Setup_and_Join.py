@@ -98,7 +98,6 @@ if 'game_brain' in st.session_state:
         if not st.session_state.game_brain.open_games_req:
             st.session_state.game_brain.get_open_games()
 
-
         # Choose a game
         game_id = selectbox(
             'Which active game do you want to join?',
