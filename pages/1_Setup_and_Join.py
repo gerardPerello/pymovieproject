@@ -86,7 +86,7 @@ if 'game_brain' in st.session_state:
         st.markdown("Select an available game, then select a player id")
 
         # GET GAME IDs / NAMES
-        if st.button("ReqAgain"):
+        if st.button("Request Open Games"):
             st.session_state.game_brain.get_open_games()
         if not st.session_state.game_brain.open_games_req:
             st.session_state.game_brain.get_open_games()
