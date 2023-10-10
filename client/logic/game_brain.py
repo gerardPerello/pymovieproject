@@ -5,15 +5,26 @@ import socketio
 
 
 class GameBrain:
-    """This client-side class manages game states and game data throughout the game.
+    """A class that manages the client-side game logic, state, and socket events.
 
-    It stores data in a format compatible with the database and contains a variety of functions for updating data and managing game states. 
-    
+    The class encapsulates all client-side game functionalities including creating,
+    joining games, and reacting to various server-side socket events like player joining,
+    and new turn events. Also, it keeps the local game state and data in sync with the server.
+
     Attributes:
-    - game: a "game" object that contains all game settings
-    - state: current game state (1: Before game setup)
-    - turn: current turn
-    - game: a "game" object that contains all game settings
+    - open_games_req: A boolean flag to keep track if open games are requested.
+    - game: An instance of the game object with all relevant game settings.
+    - game_id: A unique identifier for the game.
+    - state: An integer representing the current game state.
+    - turn: An integer representing the current turn in the game.
+    - player: A player object for the current player.
+    - player_id: A unique identifier for the player.
+    - players: A dictionary to store information of all players participating in the game.
+    - open_games: A dictionary to store information about all open games available for joining.
+    - game_started: A boolean flag indicating whether the game has started or not.
+    - stocks: A dictionary to store information about stocks in the game.
+    - currencies: A dictionary to store information about currencies in the game.
+    - sio: An instance of the socket.io client to manage real-time communication with the server.
     """
 
     def __init__(self):
@@ -48,7 +59,6 @@ class GameBrain:
         def on_player_joined(data):
             print(f"Player {data['player_id']} has joined the game")
 
-
         @self.sio.on('new_turn')
         def on_new_turn():
             print("New turn:")
@@ -58,31 +68,15 @@ class GameBrain:
             else:
                 self.next_turn()
 
-
-
+    # Functionality to create a new game with specified settings and push to the server.
     def create_and_push_game(self, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count,
                              stock_count):
 
-        # CREATE A GAME OBJECT 
-        # self.game = Game(*data)
-        # Convert game to data
-        # data = game.to_dict()
-        # self.game = Game(1, name, total_turns, sec_per_turn,  starting_money, turns_between_events, player_count, stock_count, open_=True)
         self.game = Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events,
                                 player_count, stock_count, open_=True)
 
-        # self.game = Game.get_by_id()
-
-        # Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
-        # self.game = controller.get_name(name)
-
-        # SEND TO SNOWFLAKE
-        # self.game = controller.get_name(name)
-
+    # Function to fetch all open games from the server and update the local 'open_games' attribute.
     def get_open_games(self):
-        # I want a dict: game : [players]
-        # Get all games that are open
-        # Join with players in game and get players
         self.open_games_req = True
         dict_game_players = dict()
         try:
@@ -104,9 +98,8 @@ class GameBrain:
 
         self.open_games = dict_game_players
 
+    # Functionality to enable a player to join a specific game identified by gameId and playerId.
     def join_game(self, gameId, playerId):
-        # self.game = Game.get_by_id(gameId)
-        # self.player = Player.get_by_id(gameId)
         self.game_id = gameId
         self.player_id = playerId
 
@@ -117,9 +110,11 @@ class GameBrain:
         print("Connecting to the server!!")
         self.sio.emit('join_game', {'player_id': playerId, 'game_id': gameId})
 
+    # TODO Placeholder for functionality that allows a player to leave a game. Not implemented.
     def leave_game(self, gameId, playerId):
         pass
 
+    # Setup game data, especially relevant for financial data such as stocks and currencies.
     def setup_game(self):
         print(self.game_id, self.turn)
         values = StockMarket.get_all_for_turn_and_game(self.game_id, self.turn)['values']
@@ -127,60 +122,55 @@ class GameBrain:
         self.currencies = {curr[1]: [float(curr[4])] for curr in values}
         print(self.currencies)
         self.game_started = True
-        # GET CURRENCY DATA
-        N = 20
-        """curr_1 = 20 * np.random.randn(N) + 400
-        curr_2 = 200 * np.random.randn(N) + 300
-        curr_3 = 40 * np.random.randn(N) + 300
-        curr_4 = 100 * np.random.randn(N) + 1000
-        curr_5 = 40 * np.random.randn(N) + 100
-        self.currencies = {'USD': curr_1,
-                           'JPY': curr_2,
-                           'CAD': curr_3,
-                           'GBP': curr_4,
-                           'BTX': curr_5,
-                           }"""
 
+    # Logic to handle the initiation of the game, like setting relevant state and turn variables.
     def begin_game(self):
         self.state = 2  # DURING TURN
         self.turn = 1
 
+    # Notifying the server that the player is ready for the next turn/game action.
     def player_ready(self):
-        print("Emmiting I'm Ready!")
+        print("Emitting I'm Ready!")
         self.sio.emit('player_ready', {'player_id': self.player_id, 'game_id': self.game_id})
 
+    # Handling the logic and transitions between turns, updating the financial data and game state.
     def next_turn(self):
         N = 20
         if self.turn < 20:
             self.turn += 1
             self.game_state = 3  # BETWEEN TURNS
-            print("TURNO!!")
+            print(f"Now is Turn {self.turn}")
 
             # UPDATE STOCKS
             values = StockMarket.get_all_for_turn_and_game(self.game_id, self.turn)['values']
             print(values)
             for curr in values:
                 self.currencies[curr[1]].append(float(curr[4]))
-            #self.currencies = {curr[1]: float(curr[4]) for curr in values}
 
-            # CLOSE TRADES 
+            # CLOSE TRADES
+            # TODO
 
             self.game_state = 2
         elif self.turn == 20:
             print('Game ending')
             self.end_game()
 
+    # TODO Handling the logic that should be processed at the end of the game.
     def end_game(self):
         self.game_state = 4  # GAME END
 
+    # TODO Placeholder for functionality to send an order (buy/sell) to the server. Not implemented.
     def send_order(self):
         pass
 
+    # TODO Placeholder to get the sell orders. Not implemented.
     def get_sell_orders(self):
         pass
 
+    # TODO Placeholder to retrieve final scores at the end of the game. Not implemented.
     def get_final_scores(self):
         pass
 
+    # TODO Placeholder to retrieve final scores at the end of the game. Not implemented.
     def get_portfolio(self):
         pass
