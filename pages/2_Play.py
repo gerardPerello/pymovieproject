@@ -5,17 +5,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
-
-
-
 st.set_page_config(
     page_title="Good luck!",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="collapsed" 
 )
-
-
 
 # Settings for seaborn
 sns.set_style("whitegrid")
@@ -45,9 +40,7 @@ if 'game_brain' in st.session_state:
 
         st.button(
             'Click here to begin the game')
-
-
-
+        
     # DURING TURN, BETWEEN TURN, GAME END
     if st.session_state.game_brain.state not in [0, 1]:
         if not st.session_state.game_brain.game_started:
@@ -86,7 +79,7 @@ if 'game_brain' in st.session_state:
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown('### Make an order')
+            st.markdown('### Make an order (placeholder)')
             buy_or_sell = st.selectbox('Would you like to buy or sell?', ('Buy', 'Sell'))
             chosen_stock = st.selectbox('Which stock would you like to buy?', df.columns)
             stock_quantity = st.slider('Amount of stock', 0, 300, 25)
@@ -115,14 +108,13 @@ if 'game_brain' in st.session_state:
             )
 
 
-            st.markdown("### You open orders")
+            st.markdown("### You open orders (placeholder)")
             st.dataframe(df, hide_index=True)
 
             # Needs to update relatively frequently! 
-            st.markdown('### Open Offers this Turn')
+            st.markdown('### Open Offers this Turn (placeholder)')
             
             st.dataframe(df, hide_index=True)
-
 
 
         # NEXT TURN BUTTON
@@ -131,12 +123,12 @@ if 'game_brain' in st.session_state:
             st.session_state.game_brain.player_ready()
 
         st.markdown('---')
-        st.markdown('### Your Portfolio')
+        st.markdown('### Your Portfolio (placeholder)')
         portofolio_df = st.session_state.game_brain.get_portfolio()
         st.dataframe(hide_index=True)
 
         st.markdown('---')
-        st.markdown('### You closed trades last turn')
+        st.markdown('### You closed trades last turn (placeholder)')
         # st.session_state.game_brain.get_sell_orders()
 
     
