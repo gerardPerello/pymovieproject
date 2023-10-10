@@ -1,8 +1,8 @@
-from client.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
 import requests
 import json
 class StockMarket:
-
+    """DOCSTRING NEEDED"""
+    
     url = "http://127.0.0.1:5000/models/currency/"
 
 

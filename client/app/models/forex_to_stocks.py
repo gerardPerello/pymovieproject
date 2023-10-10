@@ -1,7 +1,8 @@
-from client.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
 
 
 class ForexToStock:
+    """Placeholder class that might be useful for future development. Main version of class is probably used server-side."""
+
     def __init__(self, stock_id, currency_id, currency_weight):
         self.stock_id = stock_id
         self.currency_id = currency_id

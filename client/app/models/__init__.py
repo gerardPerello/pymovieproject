@@ -4,8 +4,6 @@ from .player import Player
 from .transaction import Transaction
 from .currency import  Currency
 from .forex_history import ForexHistory
-from .event import Event
-from .event_to_stock import Event_to_Stock
 from .stock_market import StockMarket
 from .portfolio import Portfolio
 from .player_to_game import PlayersToGame

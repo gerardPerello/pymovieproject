@@ -1,7 +1,8 @@
-from client.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
 import requests
 
 class Portfolio:
+    """Placeholder class that might be useful for future development. Main version of class is probably used server-side."""
+
     url = "http://172.20.10.2:5000/models/portfolio/" 
 
     def __init__(self, player_id, game_id, turn_id, stock_id, amount):
