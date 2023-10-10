@@ -28,16 +28,11 @@ class GameBrain:
     def create_and_push_game(self, name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count):
 
         # CREATE A GAME OBJECT 
-        #self.game = Game(*data)
-        #Convert game to data
-        #data = game.to_dict()
+
         self.game = Game(1, name, total_turns, sec_per_turn,  starting_money, turns_between_events, player_count, stock_count, open_=True)
         Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count, open_=True)
         
         # self.game = Game.get_by_id()
-
-        #Game.create(name, total_turns, sec_per_turn, starting_money, turns_between_events, player_count, stock_count)
-        #self.game = controller.get_name(name)
 
         # SEND TO SNOWFLAKE
         # self.game = controller.get_name(name)
@@ -61,6 +56,7 @@ class GameBrain:
         curr_3 = 40  * np.random.randn(N) + 300
         curr_4 = 100 * np.random.randn(N) + 1000
         curr_5 = 40  * np.random.randn(N) + 100
+        
         self.currencies = {'USD': curr_1,
             'JPY': curr_2,
             'CAD': curr_3,
@@ -74,19 +70,19 @@ class GameBrain:
 
     def next_turn(self):
         N = 20
-        if self.turn < 20:
+        if self.turn < N:
             self.turn += 1
             self.game_state = 3 # BETWEEN TURNS            
 
             # UPDATE STOCKS
 
             # CLOSE TRADES 
-
-            self.game_state = 2
-        elif self.turn == 20:
+   
+        elif self.turn == N:
+            print('----------')
             print('Game ending')
+            print('----------')
             self.end_game()
-
 
     def end_game(self):
         self.game_state = 4 # GAME END
@@ -99,7 +95,6 @@ class GameBrain:
 
     def get_final_scores(self):
         pass
-
 
     def get_portfolio(self):
         pass
