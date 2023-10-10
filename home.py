@@ -6,7 +6,7 @@ import seaborn as sns
 from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(
-    page_title=np.random.choice(['Hi!', 'Hola!', 'Hoi!']),
+    page_title=np.random.choice(['Hi!', '¡Hola!', 'Hoi!']),
     page_icon="👋",
     layout="centered",
     initial_sidebar_state="collapsed" 
