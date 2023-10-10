@@ -120,9 +120,15 @@ class GameBrain:
         pass
 
     def setup_game(self):
+        print(self.game_id, self.turn)
+        values = StockMarket.get_all_for_turn_and_game(self.game_id, self.turn)['values']
+        print(values)
+        self.currencies = {curr[1]: [float(curr[4])] for curr in values}
+        print(self.currencies)
+        self.game_started = True
         # GET CURRENCY DATA
         N = 20
-        curr_1 = 20 * np.random.randn(N) + 400
+        """curr_1 = 20 * np.random.randn(N) + 400
         curr_2 = 200 * np.random.randn(N) + 300
         curr_3 = 40 * np.random.randn(N) + 300
         curr_4 = 100 * np.random.randn(N) + 1000
@@ -132,11 +138,15 @@ class GameBrain:
                            'CAD': curr_3,
                            'GBP': curr_4,
                            'BTX': curr_5,
-                           }
+                           }"""
 
     def begin_game(self):
         self.state = 2  # DURING TURN
         self.turn = 1
+
+    def player_ready(self):
+        print("Emmiting I'm Ready!")
+        self.sio.emit('player_ready', {'player_id': self.player_id, 'game_id': self.game_id})
 
     def next_turn(self):
         N = 20
@@ -146,6 +156,11 @@ class GameBrain:
             print("TURNO!!")
 
             # UPDATE STOCKS
+            values = StockMarket.get_all_for_turn_and_game(self.game_id, self.turn)['values']
+            print(values)
+            for curr in values:
+                self.currencies[curr[1]].append(float(curr[4]))
+            #self.currencies = {curr[1]: float(curr[4]) for curr in values}
 
             # CLOSE TRADES 
 

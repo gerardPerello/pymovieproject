@@ -7,6 +7,7 @@ gameBrains = {}
 
 def create_game(gameBrain_id, game, callback):
     # Initialize a new game with its initial state and store it in games dict.
+    print(gameBrain_id)
     gameBrains[gameBrain_id] = GameBrain(game, callback)
 
 def get_gameBrain(gameBrain_id):

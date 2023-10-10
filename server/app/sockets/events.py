@@ -19,7 +19,7 @@ def handle_disconnect():
 def handle_join_game(data):
     player_id = data.get('player_id')
     game_id = data.get('game_id')
-
+    print(data)
     # Join the player to a room specific to the game.
     join_room(game_id)
     if game_id not in gameBrains:
@@ -53,8 +53,10 @@ def handle_leave_game(data):
 def handle_player_ready(data):
     game_id = data.get('game_id')
     player_id = data.get('player_id')
+    print(data)
+    print(gameBrains)
     # You might retrieve the relevant GameLogic instance from a dictionary using game_id
-    game_logic = gameBrains[game_id]
+    game_logic = gameBrains.get(game_id)
     game_logic.set_player_ready(player_id)
     print(data)
 
@@ -65,6 +67,6 @@ def handle_player_ready(data):
 def handle_next_turn(game_id):
     #game_logic = gameBrains[game_id]
     #game_logic.end_of_turn_logic()
-
+    print("Emmiting new Turn")
     # Notify clients of new turn state
     emit('new_turn', room=game_id)

@@ -5,12 +5,17 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
+
+
+
 st.set_page_config(
     page_title="Good luck!",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="collapsed" 
 )
+
+
 
 # Settings for seaborn
 sns.set_style("whitegrid")
@@ -37,18 +42,20 @@ if 'game_brain' in st.session_state:
     # WAITING FOR GAME START
     if st.session_state.game_brain.state == 1: 
         st.markdown("Please wait until game setup is completed")
-        st.session_state.game_brain.setup_game()
+
         st.button(
-            'Click here to begin the game'#,
-            #on_click=st.session_state.game_brain.begin_game
-            )
+            'Click here to begin the game')
+
 
 
     # DURING TURN, BETWEEN TURN, GAME END
-    if st.session_state.game_brain.state not in [0, 1]: 
+    if st.session_state.game_brain.state not in [0, 1]:
+        if not st.session_state.game_brain.game_started:
+            st.session_state.game_brain.setup_game()
+
         st.write('It is turn', st.session_state.game_brain.turn)
         st.write("The game state is", st.session_state.game_brain.state)
-
+        st.button("Refresh Button")
         # DATA
         df = pd.DataFrame(st.session_state.game_brain.currencies)
         st.dataframe(df[0:st.session_state.game_brain.turn+1])
@@ -91,10 +98,8 @@ if 'game_brain' in st.session_state:
                 st.write(f"You will ask for {total} to sell {chosen_stock}")
             
             if total <= balance or buy_or_sell == 'Sell':
-                st.button(
-                    "Make Order", 
-                    on_click=st.session_state.game_brain.send_order
-                )
+                if st.button("Make Order"):
+                    st.session_state.game_brain.send_order()
             else:
                 st.write("You cannot afford this order.")
                 
@@ -118,11 +123,12 @@ if 'game_brain' in st.session_state:
             
             st.dataframe(df, hide_index=True)
 
+
+
         # NEXT TURN BUTTON
-        st.button(
-            'Next Turn', 
-            on_click=st.session_state.game_brain.next_turn
-            )
+
+        if st.button('Next Turn'):
+            st.session_state.game_brain.player_ready()
 
         st.markdown('---')
         st.markdown('### Your Portfolio')
@@ -138,10 +144,8 @@ if 'game_brain' in st.session_state:
         st.write('Last turn, the offers were bla bla bla and they closed at bla bla bla.')
         st.write('Please wait while the next turn loads.')
         
-        st.button(
-            'Click here to move on to the next turn', 
-            on_click=st.session_state.game_brain.compute_next_turn
-            )
+        if st.button('Click here to move on to the next turn'):
+            st.session_state.game_brain.compute_next_turn()
 
     if st.session_state.game_brain.state == 4:
         st.markdown("## Final Scores")

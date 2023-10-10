@@ -1,13 +1,15 @@
 from ..models import *
 import random
 from flask_socketio import emit
-
+import numpy as np
+from datetime import datetime, timedelta
 class GameBrain:
 
     def __init__(self, game, new_turn_callback=None, setupPlayers = False):
         self.game = game
         self.turn = 0
         self.currencies_in_game = set()
+        self.forex_history_per_currency_in_game = dict()
         self.stocks_in_game = set()
         self.turn_buy_orders = dict()
         self.turn_sell_orders = dict()
@@ -44,6 +46,25 @@ class GameBrain:
         allCurrencies = Currency.get_all()
         self.currencies_in_game = random.sample(allCurrencies,self.game.stock_count)
         print(self.currencies_in_game)
+
+        #Select the random values for each turn. We are going to do this selecting an interval from the 100 forexHistory
+        num1 = np.random.randint(0, 500-self.game.total_turns)
+        num2 = num1 + self.game.total_turns
+
+        #delete
+        num1 = 0
+        num2 = 1
+
+        base_date = datetime(2011, 1, 1)
+        date1 = base_date + timedelta(days=num1)
+        date2 = base_date + timedelta(days=num2)
+
+
+
+        for c_ in self.currencies_in_game:
+            self.forex_history_per_currency_in_game[c_.id] = (
+                ForexHistory.get_by_date_range_and_currency(date1, date2, c_.id))
+
         # Select a random for each stock/turn.
         self.random_weights_per_stock = dict()
         for obj in range(1, self.game.stock_count + 1):
@@ -61,9 +82,16 @@ class GameBrain:
 
         # Create forex to stocks.
         for stock_id in self.stocks_and_currencies:
+            print("Creating ForexToStock")
             ForexToStock.create(stock_id, self.stocks_and_currencies[stock_id], 1)
 
+        print(self.forex_history_per_currency_in_game)
+        print(self.stocks_and_currencies)
         # NOW WE SHOULD SEND ONLY INFORMATION ABOUT THE STOCKS HERE
+        for stock_id in self.stocks_and_currencies:
+            print("Creating forex History")
+            StockMarket.create(stock_id, self.game.id, 1,
+                               self.forex_history_per_currency_in_game[self.stocks_and_currencies[stock_id]][0].value_to_dollar)
 
         self.start_game()
 
@@ -119,4 +147,15 @@ class GameBrain:
         pass
 
     def update_stocks_values(self):
-        pass
+        print("Creating forex History")
+        for stock_id in self.stocks_and_currencies:
+
+            print(self.turn)
+            try:
+                StockMarket.create(stock_id, self.game.id, self.turn,
+                               self.forex_history_per_currency_in_game[self.stocks_and_currencies[stock_id]][
+                                   self.turn-1].value_to_dollar)
+            except Exception as e:
+                StockMarket.create(stock_id, self.game.id, self.turn,
+                                   self.forex_history_per_currency_in_game[self.stocks_and_currencies[stock_id]][
+                                       0].value_to_dollar)

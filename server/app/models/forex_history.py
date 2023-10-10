@@ -38,6 +38,35 @@ class ForexHistory:
             connection.close()
 
     @classmethod
+    def get_by_date_range_and_currency(cls, start_date, end_date, currency_id):
+        connection = connect_snowflake()
+        cursor = connection.cursor()
+        try:
+            # Using the BETWEEN clause to filter records based on a date range.
+            query = """
+                SELECT * FROM FOREX_HISTORY 
+                WHERE FH_DATE BETWEEN %s AND %s AND FH_CURRENCY_ID = %s
+            """
+            cursor.execute(query, (start_date, end_date, currency_id))
+
+            results = cursor.fetchall()
+            records = []
+
+            # Processing all fetched rows
+            for result in results:
+                timestamp_id, date, currency_id, value_to_dollar = result
+                records.append(cls(timestamp_id, date, currency_id, value_to_dollar))
+
+            # If we found records, return them, otherwise return None
+            return records if records else None
+
+        except Exception as e:
+            return {'error': str(e)}
+        finally:
+            cursor.close()
+            connection.close()
+
+    @classmethod
     def get_by_timestamp_and_currency(cls, timestamp_id, currency_id):
         connection = connect_snowflake()
         cursor = connection.cursor()
