@@ -25,7 +25,7 @@ class GameBrain:
         self.player = None
         self.player_id = 0  # current player
         self.players = {}  # all participating players
-
+        self.open_games = dict()
         self.game_started = False
 
         # financial data
@@ -83,6 +83,7 @@ class GameBrain:
         # I want a dict: game : [players]
         # Get all games that are open
         # Join with players in game and get players
+        self.open_games_req = True
         dict_game_players = dict()
         try:
             openGames = Game.get_all_open()['games']
@@ -101,7 +102,7 @@ class GameBrain:
         except Exception as e:
             print(e)
 
-        return dict_game_players
+        self.open_games = dict_game_players
 
     def join_game(self, gameId, playerId):
         # self.game = Game.get_by_id(gameId)

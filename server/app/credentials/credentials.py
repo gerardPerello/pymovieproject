@@ -1,7 +1,7 @@
 import os
-os.environ["SNOWSQL_PWD"] = "iamSnowflake7"
+os.environ["SNOWSQL_PWD"] = "iamSnowflake8"
 os.environ["SNOWSQL_USR"] = "edraetta"
-os.environ["SNOWSQL_ACC"] = "xc01903.eu-central-1"
+os.environ["SNOWSQL_ACC"] = "nf53860.eu-central-1"
 os.environ["SNOWSQL_WH"] = "compute_wh"
 os.environ["SNOWSQL_DB"] = "stocks_db"
 os.environ["SNOWSQL_SCH"] = "public"

@@ -85,28 +85,19 @@ if 'game_brain' in st.session_state:
         st.markdown("Select an available game, then select a player id")
 
         #########Gerard: WHAT???
-        """if 'game_brain' not in st.session_state: # i.e. you havent just created the game
-            st.write("Made a game brain.")
-            st.session_state.game_brain.create_and_push_game(
-                name = game_name,
-                total_turns = turncount,
-                # sec_per_turn = secondsperturn,
-                starting_money = startingmoney,
-                turns_between_events = event_frequency,
-                player_count = playercount,
-                stock_count = stockcount
-            )"""
+
 
         # GET GAME IDs / NAMES
-
+        if st.button("ReqAgain"):
+            st.session_state.game_brain.get_open_games()
         if not st.session_state.game_brain.open_games_req:
-            open_games = st.session_state.game_brain.get_open_games()
+            st.session_state.game_brain.get_open_games()
         #counter = count(1) ################G: WHAT?
 
         # Choose a game
         game_id = selectbox(
             'Which active game do you want to join?',
-            open_games.keys()
+            st.session_state.game_brain.open_games.keys()
         )
         st.write('You will join Game_', game_id)
 
@@ -115,7 +106,7 @@ if 'game_brain' in st.session_state:
             # Choose a player
             player_id = selectbox(
                 'Which player are you?',
-                open_games[game_id]
+                st.session_state.game_brain.open_games[game_id]
             )
 
             st.write('You are the Player_', player_id)
