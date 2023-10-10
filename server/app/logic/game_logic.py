@@ -5,8 +5,12 @@ import random
 from flask_socketio import emit
 import numpy as np
 from datetime import datetime, timedelta
+
+# Definition of the GameBrain class that MANAGES the logic of all the client.
 class GameBrain:
 
+    # Constructor to initialize several properties, some of which are for maintaining
+    # game state and others for tracking players and stock/currency data.
     def __init__(self, game, new_turn_callback=None, setupPlayers = False):
         self.game = game
         self.turn = 0
@@ -25,6 +29,8 @@ class GameBrain:
         self.new_turn_callback = new_turn_callback
         print("Creating")
 
+    # A method to setup player instances and association with a game.
+    # It initializes players and associates them with a game.
     def setupPlayers(self):
         # Create the players.
         for i in range(1, self.game.player_count + 1):
@@ -42,6 +48,8 @@ class GameBrain:
             message = PlayersToGame.create(self.game.id, player_id, 1, self.game.starting_money)
             print(message)
 
+    # A method to initialize game settings such as selecting random currencies,
+    # creating stocks, and preparing other game-related data.
     def setupGame(self):
 
         # Select the N random stocksID's that are going to be in to the game
@@ -96,20 +104,14 @@ class GameBrain:
 
         self.start_game()
 
-    def add_order(self, order, type):
-        if type == "BUY":
-            self.turn_buy_orders[order.id](order)
-        else:
-            self.turn_sell_orders[order.id](order)
-
-    def cancel_order(self, order_id):
-        self.turn_buy_orders.pop(order_id)
-
+    # A method to mark a player as ready, and trigger the next game turn if all players are ready.
     def set_player_ready(self, player_id):
         self.ready_players.add(player_id)
         if self.all_players_ready_to_change_turn():
             self.next_turn()
 
+    # A method to add a player to the connected player's set and initiate
+    # the game setup if all players are connected.
     def add_connected_player(self, player_id):
         print(player_id)
         self.connected_players.add(player_id)
@@ -117,15 +119,19 @@ class GameBrain:
         if self.all_players_ready_to_start():
             self.setupGame()
 
+    # A method to remove a player from the connected players’ set.
     def remove_connected_player(self, player_id):
         self.connected_players.discard(player_id)
 
+    # A method to check if all players are ready to move to the next turn.
     def all_players_ready_to_change_turn(self):
         return len(self.ready_players) == len(self.connected_players)
 
+    # A method to check if all players are connected and ready to start the game.
     def all_players_ready_to_start(self):
         return len(self.connected_players) == self.game.player_count
 
+    # A method to start the game and possibly notify external code about the turn start.
     def start_game(self):
         # Logic to handle turn transition
         print("Starting the GAME")
@@ -133,6 +139,8 @@ class GameBrain:
         if self.new_turn_callback:
             self.new_turn_callback()  # Notify external code that a new turn should start
 
+    # A method to progress to the next game turn. It manages order matching,
+    # updates stock values, and possibly notifies external code about the turn progression.
     def next_turn(self):
         # Logic to handle turn transition
         self.turn += 1
@@ -144,9 +152,7 @@ class GameBrain:
             self.new_turn_callback()  # Notify external code that a new turn should start
             self.ready_players.clear()  # Restart the players ready.
 
-    def match_orders(self):
-        pass
-
+    # A method to update the values of stocks, create stock market instances, and manage stock-related data.
     def update_stocks_values(self):
         print("Creating forex History")
         cont = 1
@@ -162,3 +168,18 @@ class GameBrain:
                                    self.forex_history_per_currency_in_game[self.stocks_and_currencies[stock_id]][
                                        0].value_to_dollar * Decimal(str(self.random_weights_per_stock[stock_id][self.turn])))
             cont+=1
+
+    # TODO A method to add an order (buy/sell) for a player.
+    def add_order(self, order, type):
+        if type == "BUY":
+            self.turn_buy_orders[order.id](order)
+        else:
+            self.turn_sell_orders[order.id](order)
+
+    # TODO A method to cancel a player's order.
+    def cancel_order(self, order_id):
+        self.turn_buy_orders.pop(order_id)
+
+    # TODO The method that's goning to match the orders in the turn.
+    def match_orders(self):
+        pass
