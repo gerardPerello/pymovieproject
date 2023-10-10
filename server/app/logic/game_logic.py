@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from ..models import *
 import random
 from flask_socketio import emit
@@ -44,16 +46,13 @@ class GameBrain:
 
         # Select the N random stocksID's that are going to be in to the game
         allCurrencies = Currency.get_all()
+        random.seed(34)
         self.currencies_in_game = random.sample(allCurrencies,self.game.stock_count)
         print(self.currencies_in_game)
 
         #Select the random values for each turn. We are going to do this selecting an interval from the 100 forexHistory
         num1 = np.random.randint(0, 500-self.game.total_turns)
         num2 = num1 + self.game.total_turns
-
-        #delete
-        num1 = 0
-        num2 = 1
 
         base_date = datetime(2011, 1, 1)
         date1 = base_date + timedelta(days=num1)
@@ -65,20 +64,22 @@ class GameBrain:
             self.forex_history_per_currency_in_game[c_.id] = (
                 ForexHistory.get_by_date_range_and_currency(date1, date2, c_.id))
 
-        # Select a random for each stock/turn.
-        self.random_weights_per_stock = dict()
-        for obj in range(1, self.game.stock_count + 1):
-            self.random_weights_per_stock[obj] = {}  # Create an empty dictionary for each object
-            for turn in range(1, self.game.total_turns + 1):
-                weight = random.uniform(0, 2)  # Generate a random weight between 0 and 1
-                self.random_weights_per_stock[obj][turn] = weight
-        print(self.random_weights_per_stock)
+
         # Create the stocks
         for currency in self.currencies_in_game:
             print(currency)
             new_stock = Stock.create(currency.code)
             self.stocks_in_game.add(new_stock)
             self.stocks_and_currencies[new_stock.id] = currency.id
+
+            # Select a random for each stock/turn.
+        self.random_weights_per_stock = dict()
+        for obj in self.stocks_and_currencies.keys():
+            self.random_weights_per_stock[obj] = {}  # Create an empty dictionary for each object
+            for turn in range(1, self.game.total_turns + 1):
+                weight = random.uniform(0, 2)  # Generate a random weight between 0 and 1
+                self.random_weights_per_stock[obj][turn] = weight
+        print(self.random_weights_per_stock)
 
         # Create forex to stocks.
         for stock_id in self.stocks_and_currencies:
@@ -148,14 +149,16 @@ class GameBrain:
 
     def update_stocks_values(self):
         print("Creating forex History")
+        cont = 1
         for stock_id in self.stocks_and_currencies:
 
             print(self.turn)
             try:
                 StockMarket.create(stock_id, self.game.id, self.turn,
                                self.forex_history_per_currency_in_game[self.stocks_and_currencies[stock_id]][
-                                   self.turn-1].value_to_dollar)
+                                   self.turn-1].value_to_dollar * Decimal(str(self.random_weights_per_stock[stock_id][self.turn])))
             except Exception as e:
                 StockMarket.create(stock_id, self.game.id, self.turn,
                                    self.forex_history_per_currency_in_game[self.stocks_and_currencies[stock_id]][
-                                       0].value_to_dollar)
+                                       0].value_to_dollar * Decimal(str(self.random_weights_per_stock[stock_id][self.turn])))
+            cont+=1
