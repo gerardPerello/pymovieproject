@@ -1,1 +1,1 @@
-from server.app.credentials import *
+from . import *

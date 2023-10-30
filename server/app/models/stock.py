@@ -1,4 +1,4 @@
-from server.app.snowflake_connection import connect_snowflake
+from ..snowflake_connection import connect_snowflake
 
 class Stock:
     def __init__(self, id, name):

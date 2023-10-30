@@ -1,4 +1,4 @@
-from server.app.snowflake_connection import connect_snowflake  # Your actual connection setup might be different
+from ..snowflake_connection import connect_snowflake
 
 class Event_to_Stock:
     def __init__(self, event_id, stock_id, game_id):

@@ -1,4 +1,4 @@
-from server.app.snowflake_connection import connect_snowflake
+from ..snowflake_connection import connect_snowflake
 
 class ForexHistory:
     def __init__(self, timestamp_id, date, currency_id, value_to_dollar):
